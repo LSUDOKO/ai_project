@@ -73,10 +73,10 @@ export function ScannerFrame({ children, active = false, className = "" }: { chi
           const ny = -Math.cos(t);
           const x = 150 + 146 * nx;
           const y = 205 + 200 * ny;
-          return <line key={i} x1={x.toFixed(2)} y1={y.toFixed(2)} x2={(x - nx * 7).toFixed(2)} y2={(y - ny * 7).toFixed(2)} stroke="var(--color-forest)" strokeOpacity={active ? 0.9 : 0.45} strokeWidth="1.5" />;
+          return <line key={i} x1={x.toFixed(2)} y1={y.toFixed(2)} x2={(x - nx * 7).toFixed(2)} y2={(y - ny * 7).toFixed(2)} stroke="var(--color-forest)" strokeOpacity={active ? 1 : 0.7} strokeWidth="1.5" />;
         })}
       </svg>
-      <div className="absolute inset-[14px] overflow-hidden rounded-[999px] bg-forest/80">{children}</div>
+      <div className="absolute inset-[14px] overflow-hidden rounded-[50%] bg-forest/80">{children}</div>
     </div>
   );
 }

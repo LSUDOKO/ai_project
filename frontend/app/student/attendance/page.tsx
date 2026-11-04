@@ -49,7 +49,7 @@ function History() {
           <div className="mb-4 grid grid-cols-3 gap-3">
             <Stat label="Present" value={present} tone="good" />
             <Stat label="Absent" value={records.length - present} tone="stop" />
-            <Stat label="Rate" value={`${percent(present, records.length)}%`} />
+            <Stat label="Rate" value={records.length ? `${percent(present, records.length)}%` : "–"} />
           </div>
           {records.length === 0 ? (
             <Empty title="No sessions to show">Attendance appears here once your teacher finishes a session.</Empty>
@@ -59,7 +59,7 @@ function History() {
                 {records.map((r) => (
                   <li key={r.id} className="flex items-center justify-between gap-3 px-3 py-3">
                     <div className="min-w-0">
-                      <p className="truncate">{r.className}{r.topic && <span className="text-muted"> · {r.topic}</span>}</p>
+                      <p className="[overflow-wrap:anywhere]">{r.className}{r.topic && <span className="text-muted"> · {r.topic}</span>}</p>
                       <p className="text-sm text-muted">{formatDate(r.startedAt)}, {formatTime(r.startedAt)}{r.method === "manual" && " · marked by teacher"}</p>
                     </div>
                     <Status present={r.present} />

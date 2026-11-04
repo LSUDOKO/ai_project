@@ -10,7 +10,7 @@ export function AuthFrame({ title, subtitle, children }: { title: string; subtit
         <Logo />
         <ThemeToggle />
       </header>
-      <main className="rise">
+      <main className="rise lg:my-auto lg:pb-20">
         <h1 className="text-4xl font-light tracking-tight">{title}</h1>
         <p className="mb-6 mt-2 text-muted">{subtitle}</p>
         <Panel>{children}</Panel>

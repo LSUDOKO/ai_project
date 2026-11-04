@@ -8,11 +8,10 @@ import { ErrorNote, IconButton, Loading, ThemeToggle } from "./ui";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
-    <Link href="/" className={`flex items-center gap-2 text-lg font-medium tracking-tight ${className}`} aria-label="Rollcall home">
-      <svg width="24" height="24" viewBox="0 0 22 22" aria-hidden="true">
-        <path d="M11 1a10 10 0 0 0 0 20z" fill="var(--color-forest)" />
-        <path d="M11 1a10 10 0 0 1 0 20z" fill="var(--color-wait)" />
-        <rect x="10.4" y="0" width="1.2" height="22" fill="var(--color-paper)" />
+    <Link href="/" className={`flex min-h-11 items-center gap-2 text-lg font-medium tracking-tight ${className}`} aria-label="Rollcall home">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <circle cx="13" cy="13" r="11.5" stroke="var(--color-forest)" strokeWidth="3" strokeDasharray="1.2 1.21" />
+        <path d="M8.5 13.5l3.2 3.2 5.8-6.6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       Rollcall
     </Link>
@@ -86,17 +85,17 @@ export function AppShell({ role, children }: { role?: User["role"]; children: Re
   return (
     <Ctx.Provider value={{ user, setUser }}>
       <div className="mx-auto flex min-h-dvh max-w-6xl flex-col">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 bg-paper/80 px-4 backdrop-blur sm:px-6">
+        <header className="sticky top-3 z-20 mx-4 mt-3 flex items-center justify-between gap-3 rounded-full bg-card/85 py-2 pl-5 pr-2 shadow-[var(--shadow-soft)] backdrop-blur sm:mx-6">
           <Logo />
           <div className="flex items-center gap-2">
-            <span className="mr-1 hidden text-sm text-muted sm:inline">{user.name}</span>
+            <span className="mr-1 hidden max-w-56 truncate text-sm text-muted sm:inline">{user.name}</span>
             <ThemeToggle />
             <IconButton label="Sign out" onClick={signOut}>
               <LogOut size={18} aria-hidden="true" />
             </IconButton>
           </div>
         </header>
-        <main className="rise flex-1 px-4 pb-32 pt-2 sm:px-6">{children}</main>
+        <main className="rise flex-1 px-4 pb-32 pt-4 sm:px-6">{children}</main>
         <nav className="fixed inset-x-0 bottom-4 z-20 mx-auto w-fit pb-[env(safe-area-inset-bottom)]" aria-label="Main">
           <ul className="flex items-center gap-1.5 rounded-full bg-card/90 p-2 shadow-[var(--shadow-float)] backdrop-blur">
             {NAV[user.role].map(({ href, label, icon: Icon, ...rest }) => {
@@ -126,7 +125,7 @@ export function PageTitle({ title, subtitle, action }: { title: string; subtitle
   return (
     <div className="mb-5 mt-2 flex flex-wrap items-end justify-between gap-3">
       <div className="min-w-0">
-        <h1 className="text-3xl font-light tracking-tight sm:text-4xl">{title}</h1>
+        <h1 className="text-3xl font-light tracking-tight [overflow-wrap:anywhere] sm:text-4xl">{title}</h1>
         {subtitle && <div className="mt-1 text-muted">{subtitle}</div>}
       </div>
       {action}

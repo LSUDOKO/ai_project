@@ -73,8 +73,8 @@ function Classes() {
         </Panel>
       )}
       {classes && classes.length > 0 && (
-        <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-          <div className="grid content-start gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+          <div className="grid grid-cols-1 content-start gap-3 sm:grid-cols-2">
             {classes.map((klass) => (
               <Link key={klass.id} href={`/teacher/class/${klass.id}`} className="block rounded-panel transition-transform hover:-translate-y-0.5">
                 <Panel className="flex h-full flex-col">
@@ -108,7 +108,7 @@ function Classes() {
                             <span className="block truncate">{s.className}</span>
                             <span className="block text-sm text-muted">{formatDate(s.startedAt)}, {formatTime(s.startedAt)}</span>
                           </span>
-                          <span className="shrink-0 text-sm">{s.present}/{s.total}</span>
+                          <span className="shrink-0 text-sm tabular-nums">{s.present}/{s.total} present</span>
                         </Link>
                       </li>
                     ))}

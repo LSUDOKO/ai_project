@@ -87,18 +87,18 @@ function StudentHome() {
       {classes && (
         <>
           <Checklist joined={classes.length > 0} />
-          <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
             <div className="space-y-3">
               <h2 className="text-xl font-normal">My classes</h2>
-              {classes.length === 0 && <Empty title="You haven't joined a class yet">Ask your teacher for the six-letter class code.</Empty>}
+              {classes.length === 0 && <Empty title="You haven't joined a class yet">Ask your teacher for the six-character class code.</Empty>}
               {classes.map((klass) => (
                 <Panel key={klass.id} className="flex items-center gap-4">
-                  <span className={klass.total && percent(klass.present, klass.total) < 75 ? "text-stop" : "text-good"}>
-                    <Ring value={percent(klass.present, klass.total)} label={`${percent(klass.present, klass.total)}% attendance`} />
+                  <span className={!klass.total ? "text-muted" : percent(klass.present, klass.total) < 75 ? "text-stop" : "text-good"}>
+                    <Ring value={klass.total ? percent(klass.present, klass.total) : null} label={klass.total ? `${percent(klass.present, klass.total)}% attendance` : "No sessions yet"} />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <h3 className="truncate text-lg font-normal">{klass.name}</h3>
-                    <p className="truncate text-sm text-muted">{[klass.subject, klass.teacher].filter(Boolean).join(" · ")}</p>
+                    <h3 className="line-clamp-2 text-lg font-normal [overflow-wrap:anywhere]">{klass.name}</h3>
+                    <p className="line-clamp-2 text-sm text-muted [overflow-wrap:anywhere]">{[klass.subject, klass.teacher].filter(Boolean).join(" · ")}</p>
                     <p className="mt-1 text-sm text-muted">{klass.total ? `${klass.present} of ${klass.total} sessions attended` : "No sessions yet"}</p>
                   </div>
                   <IconButton label={`Leave ${klass.name}`} onClick={() => setLeaving(klass)}><LogOut size={16} aria-hidden="true" /></IconButton>
@@ -107,7 +107,7 @@ function StudentHome() {
             </div>
             <div className="space-y-4">
               <Panel>
-                <h2 id="join" className="scroll-mt-20 text-xl font-normal">Join a class</h2>
+                <h2 id="join" className="scroll-mt-24 text-xl font-normal">Join a class</h2>
                 <form
                   className="mt-3 space-y-3"
                   onSubmit={(event) => {
@@ -127,7 +127,7 @@ function StudentHome() {
                   <p className="text-sm text-muted">Face recognition</p>
                   {user.faceEnrolledAt ? <Chip tone="good"><Check size={14} aria-hidden="true" /> Enrolled</Chip> : <Chip tone="wait">Not enrolled</Chip>}
                 </div>
-                <Link href="/student/face" className="text-sm underline underline-offset-4">{user.faceEnrolledAt ? "Test or manage" : "Enrol now"}</Link>
+                <Link href="/student/face" className="inline-flex min-h-11 shrink-0 items-center text-sm underline underline-offset-4">{user.faceEnrolledAt ? "Test or manage" : "Enrol now"}</Link>
               </Panel>
             </div>
           </div>

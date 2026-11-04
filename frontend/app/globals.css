@@ -55,7 +55,6 @@ html {
 
 body {
   font-family: var(--font-sans);
-  font-feature-settings: "tnum" 1;
   background: radial-gradient(120% 60% at 50% 0%, var(--bg-glow, #e8f1e5) 0%, var(--color-paper) 60%) fixed;
 }
 
@@ -80,8 +79,7 @@ dialog::backdrop {
 }
 
 @keyframes tick-in {
-  0%, 18% { opacity: 0; transform: translateY(8px); }
-  26%, 100% { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(8px); }
 }
 
 @keyframes pulse-dot {
@@ -93,10 +91,17 @@ dialog::backdrop {
 .scanline { animation: scan 3.6s ease-in-out infinite; }
 .pulse-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
 
+/* Plays once and only delays its start, so the resting state is always visible. */
+@media (prefers-reduced-motion: no-preference) {
+  .tick-in { animation: tick-in 0.5s ease-out backwards; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
     transition-duration: 0.01ms !important;
   }
+  .scanline { display: none; }
 }

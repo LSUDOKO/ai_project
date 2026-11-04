@@ -27,11 +27,21 @@ function FaceOverlay({ result }: { result: Recognition | null }) {
         const known = face.status !== "unknown";
         const color = known ? "#7fd178" : "#f0c04f";
         const label = known ? face.name ?? "" : "Not recognised";
+        // Sized against the frame width so it stays readable on a phone-width video.
+        const fontSize = width * 0.036;
+        const labelW = label.length * fontSize * 0.56 + fontSize;
+        const labelH = fontSize * 1.5;
+        // Keep the label inside what the cropped video shows (between 4:3 and 16:9, see the frame below).
+        const edgeX = Math.max(0, (width - (height * 4) / 3) / 2);
+        const edgeY = Math.max(0, (height - (width * 9) / 16) / 2);
+        const labelX = Math.max(edgeX, Math.min(mirroredX, width - edgeX - labelW));
+        const above = y - labelH - fontSize * 0.25;
+        const labelY = above >= edgeY ? above : Math.max(edgeY, y) + fontSize * 0.25;
         return (
           <g key={index}>
             <rect x={mirroredX} y={y} width={w} height={h} rx={w * 0.16} fill="none" stroke={color} strokeWidth={Math.max(2.5, width / 240)} />
-            <rect x={mirroredX} y={Math.max(0, y - height * 0.075)} width={Math.max(w, label.length * width * 0.0175)} height={height * 0.065} rx={height * 0.02} fill="rgb(16 22 18 / 0.85)" />
-            <text x={mirroredX + width * 0.012} y={Math.max(height * 0.05, y - height * 0.027)} fill={color} fontSize={height * 0.04} fontFamily="inherit">{label}</text>
+            <rect x={labelX} y={labelY} width={labelW} height={labelH} rx={labelH * 0.3} fill="rgb(16 22 18 / 0.88)" />
+            <text x={labelX + fontSize * 0.5} y={labelY + labelH * 0.7} fill={color} fontSize={fontSize} fontFamily="inherit">{label}</text>
           </g>
         );
       })}
@@ -45,7 +55,7 @@ function Scanner({ session, onMarked }: { session: Session; onMarked: () => void
   const [result, setResult] = useState<Recognition | null>(null);
   const [lastMarked, setLastMarked] = useState<string[]>([]);
   const [error, setError] = useState("");
-    const running = useRef(false);
+  const running = useRef(false);
 
   const loop = useCallback(async () => {
     while (running.current) {
@@ -92,10 +102,10 @@ function Scanner({ session, onMarked }: { session: Session; onMarked: () => void
 
   return (
     <Panel className="!p-3">
-      <div className="relative aspect-video overflow-hidden rounded-[1.25rem] bg-night">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[1.25rem] bg-night sm:aspect-video">
         <video ref={videoRef} playsInline muted className="h-full w-full -scale-x-100 object-cover" />
-        <FaceOverlay result={result} />
         {scanning && <div className="scanline absolute inset-x-0 h-0.5 bg-white/60 shadow-[0_0_14px_3px_rgb(255_255_255/0.35)]" />}
+        <FaceOverlay result={result} />
         {!live && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center text-white">
             <p className="max-w-sm text-white/80">Point the camera at the door or the front of the room. Faces are matched against this class only.</p>
@@ -134,7 +144,7 @@ function Register({ session, onToggle }: { session: Session; onToggle: (student:
           {students.map((s) => (
             <li key={s.id} className="flex items-center gap-3 px-2 py-2.5">
               <div className="min-w-0 flex-1">
-                <p className="truncate">{s.name}</p>
+                <p className="[overflow-wrap:anywhere]">{s.name}</p>
                 <p className="truncate text-sm text-muted">
                   {s.present && s.markedAt ? `${formatTime(s.markedAt)} · ${s.method === "face" ? "by face" : "by hand"}` : s.faceEnrolled ? s.rollNo || "Not marked" : "No face enrolled"}
                 </p>
@@ -145,7 +155,7 @@ function Register({ session, onToggle }: { session: Session; onToggle: (student:
                 aria-checked={s.present}
                 aria-label={`${s.name}: ${s.present ? "present" : "absent"}`}
                 onClick={() => onToggle(s)}
-                className={`min-h-10 w-24 shrink-0 rounded-full text-sm font-medium transition-colors ${s.present ? "bg-good-soft text-good" : "bg-stop-soft text-stop"}`}
+                className={`min-h-11 w-24 shrink-0 rounded-full text-sm font-medium transition-colors ${s.present ? "bg-good-soft text-good" : "bg-stop-soft text-stop"}`}
               >
                 {s.present ? "Present" : "Absent"}
               </button>
@@ -213,7 +223,7 @@ function SessionView() {
 
   return (
     <>
-      <Link href={`/teacher/class/${session.classId}`} className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink"><ChevronLeft size={16} aria-hidden="true" /> {session.className}</Link>
+      <Link href={`/teacher/class/${session.classId}`} className="inline-flex min-h-11 items-center gap-1 text-sm text-muted hover:text-ink"><ChevronLeft size={16} aria-hidden="true" /> {session.className}</Link>
       <PageTitle
         title={session.topic || session.className}
         subtitle={<>{formatDate(session.startedAt)}, {formatTime(session.startedAt)} {open ? <Chip tone="stop" className="ml-1"><span className="pulse-dot h-2 w-2 rounded-full bg-current" aria-hidden="true" /> Live</Chip> : <Chip className="ml-1">Finished</Chip>}</>}
@@ -229,7 +239,7 @@ function SessionView() {
         }
       />
       <ErrorNote>{actionError}</ErrorNote>
-      <div className={`mt-3 grid items-start gap-5 ${open ? "lg:grid-cols-[1.5fr_1fr]" : "lg:grid-cols-[1fr_2fr]"}`}>
+      <div className={`mt-3 grid grid-cols-1 items-start gap-5 ${open ? "lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]" : "lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"}`}>
         {open ? (
           <Scanner session={session} onMarked={reload} />
         ) : (
@@ -245,7 +255,7 @@ function SessionView() {
         <div>
           <div className="mb-3 flex items-baseline justify-between gap-3">
             <h2 className="text-xl font-normal">Register</h2>
-            <p data-testid="present-count" className="text-muted"><span className="text-2xl font-light text-ink">{presentCount}</span> of {session.students.length} present</p>
+            <p data-testid="present-count" className="text-muted"><span className="text-2xl font-light tabular-nums text-ink">{presentCount}</span> of {session.students.length} present</p>
           </div>
           <Register session={session} onToggle={toggle} />
         </div>

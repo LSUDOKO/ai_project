@@ -55,7 +55,7 @@ function Enroll({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <div className="mx-auto grid max-w-4xl items-start gap-6 md:grid-cols-2">
+    <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
       <div>
         <ScannerFrame active={live}>
           <video ref={videoRef} playsInline muted className="h-full w-full -scale-x-100 object-cover" />
@@ -147,7 +147,7 @@ function Manage({ onReenroll }: { onReenroll: () => void }) {
   }
 
   return (
-    <div className="mx-auto grid max-w-4xl items-start gap-6 md:grid-cols-2">
+    <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
       <ScannerFrame active={live}>
         <video ref={videoRef} playsInline muted className="h-full w-full -scale-x-100 object-cover" />
         {!live && <div className="absolute inset-0 flex items-center justify-center text-white/90"><ScanFace size={56} strokeWidth={1.2} aria-hidden="true" /></div>}

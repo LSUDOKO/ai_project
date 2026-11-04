@@ -105,7 +105,7 @@ function Roster({ data, reload }: { data: Detail; reload: () => void }) {
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-xl font-normal">Students</h2>
         {data.students.length > 0 && (
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-72">
             <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" aria-hidden="true" />
             <input className={`${inputClass} !py-2.5 pl-10`} type="search" aria-label="Search students" placeholder="Name, roll number, email" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
@@ -119,12 +119,12 @@ function Roster({ data, reload }: { data: Detail; reload: () => void }) {
             {students.map((s) => (
               <li key={s.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-3 py-3">
                 <div className="min-w-0 flex-1 basis-48">
-                  <p className="truncate">{s.name}</p>
+                  <p className="[overflow-wrap:anywhere]">{s.name}</p>
                   <p className="truncate text-sm text-muted">{[s.rollNo, s.email].filter(Boolean).join(" · ")}</p>
                 </div>
                 {s.faceEnrolled ? <Chip tone="good"><ScanFace size={14} aria-hidden="true" /> Enrolled</Chip> : <Chip tone="wait">No face yet</Chip>}
-                <span className="w-24 text-sm text-muted">{s.total ? `${percent(s.present, s.total)}% (${s.present}/${s.total})` : "No sessions"}</span>
-                <span className="flex gap-2">
+                <span className="w-24 text-sm tabular-nums text-muted">{s.total ? `${percent(s.present, s.total)}% (${s.present}/${s.total})` : "No sessions"}</span>
+                <span className="ml-auto flex gap-2">
                   <IconButton label={`Edit ${s.name}`} onClick={() => setEditing(s)}><Pencil size={16} aria-hidden="true" /></IconButton>
                   <IconButton label={`Remove ${s.name}`} onClick={() => setRemoving(s)}><UserMinus size={16} aria-hidden="true" /></IconButton>
                 </span>
@@ -211,7 +211,7 @@ function ClassDetail() {
 
   return (
     <>
-      <Link href="/teacher" className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink"><ChevronLeft size={16} aria-hidden="true" /> All classes</Link>
+      <Link href="/teacher" className="inline-flex min-h-11 items-center gap-1 text-sm text-muted hover:text-ink"><ChevronLeft size={16} aria-hidden="true" /> All classes</Link>
       <PageTitle
         title={klass.name}
         subtitle={klass.subject}
@@ -225,7 +225,7 @@ function ClassDetail() {
           )
         }
       />
-      <div className="grid gap-6 lg:grid-cols-[1.7fr_1fr]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
         <div className="space-y-6">
           <Roster data={data} reload={reload} />
           <section>
@@ -243,7 +243,8 @@ function ClassDetail() {
                     <li key={s.id}>
                       <Link href={`/teacher/session/${s.id}`} className="flex items-center justify-between gap-3 rounded-2xl px-3 py-3 hover:bg-raised/60">
                         <span className="min-w-0">
-                          <span className="block truncate">{formatDate(s.startedAt)}, {formatTime(s.startedAt)}{s.topic && <span className="text-muted"> · {s.topic}</span>}</span>
+                          <span className="block">{formatDate(s.startedAt)}, {formatTime(s.startedAt)}</span>
+                          {s.topic && <span className="block truncate text-sm text-muted">{s.topic}</span>}
                         </span>
                         {s.endedAt ? <span className="shrink-0 text-sm">{s.present}/{s.total} present</span> : <Chip tone="stop">Open</Chip>}
                       </Link>
@@ -254,7 +255,7 @@ function ClassDetail() {
             )}
           </section>
         </div>
-        <aside className="space-y-4">
+        <aside className={`space-y-4 ${klass.students === 0 ? "order-first lg:order-none" : ""}`}>
           <Panel>
             <p className="text-sm text-muted">Class code</p>
             <p data-testid="join-code" className="mt-1 text-4xl font-light tracking-[0.2em]">{klass.joinCode}</p>

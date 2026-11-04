@@ -10,14 +10,12 @@ import { getToken, wakeServer } from "@/lib/api";
 function FaceMesh() {
   return (
     <svg viewBox="0 0 200 270" className="h-full w-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <rect width="100" height="270" fill="#6f8b6d" />
-      <rect x="100" width="100" height="270" fill="#55705a" />
+      <rect width="200" height="270" fill="#5f7c5f" />
       <g fill="none" stroke="white" strokeWidth="1.6" strokeLinecap="round">
         <path d="M100 40c-38 0-58 30-58 72 0 50 28 98 58 98s58-48 58-98c0-42-20-72-58-72z" strokeOpacity="0.7" />
         <path d="M68 104c8-6 18-6 24 0M108 104c6-6 16-6 24 0" strokeOpacity="0.95" />
         <path d="M100 118v26c0 5-4 8-10 8" strokeOpacity="0.8" />
         <path d="M84 176c10 6 22 6 32 0" strokeOpacity="0.95" />
-        <path d="M100 18v232" strokeDasharray="4 5" strokeOpacity="0.5" />
       </g>
       <g fill="white">
         {[[58, 92], [80, 86], [120, 86], [142, 92], [52, 130], [148, 130], [72, 124], [128, 124], [100, 146], [66, 164], [134, 164], [84, 176], [116, 176], [100, 196], [100, 60], [70, 66], [130, 66]].map(([cx, cy]) => (
@@ -35,14 +33,14 @@ const SAMPLE_ROSTER = ["Asha Verma", "Daniel Mensah", "Mei Tan"];
 
 function HeroArt() {
   return (
-    <div className="relative mx-auto w-full max-w-md py-2">
-      <ScannerFrame active>
+    <div className="mx-auto flex w-full max-w-lg flex-col items-center gap-5 py-2 sm:flex-row sm:justify-center">
+      <ScannerFrame active className="!mx-0 max-w-[17.5rem] sm:max-w-[19rem]">
         <FaceMesh />
         <div className="scanline absolute inset-x-0 h-0.5 bg-white/80 shadow-[0_0_14px_3px_rgb(255_255_255/0.45)]" />
       </ScannerFrame>
-      <ul className="absolute -right-1 bottom-6 space-y-2 sm:-right-4" aria-hidden="true">
+      <ul className="flex flex-wrap justify-center gap-2 sm:shrink-0 sm:flex-col" aria-hidden="true">
         {SAMPLE_ROSTER.map((name, index) => (
-          <li key={name} className="flex items-center gap-2 rounded-full bg-raised py-1.5 pl-2 pr-4 text-sm shadow-[var(--shadow-float)]" style={{ animation: `tick-in 6s ${index * 0.7}s ease-out infinite alternate both` }}>
+          <li key={name} className="tick-in flex items-center gap-2 whitespace-nowrap rounded-full bg-raised py-1.5 pl-2 pr-4 text-sm shadow-[var(--shadow-soft)]" style={{ animationDelay: `${0.6 + index * 0.5}s` }}>
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-good-soft text-good"><Check size={14} /></span>
             {name}
           </li>
@@ -55,7 +53,7 @@ function HeroArt() {
 const STEPS = [
   {
     title: "Teacher makes a class",
-    body: "Name it, and you get a six-letter code. Share it in the group chat, or read it out on day one.",
+    body: "Name it, and you get a six-character code. Share it in the group chat, or read it out on day one.",
     art: (
       <div className="flex justify-center gap-1.5" aria-hidden="true">
         {"K7MQ2X".split("").map((letter) => (
@@ -115,7 +113,7 @@ export default function Landing() {
       <header className="sticky top-3 z-20 mt-3 flex items-center justify-between gap-2 rounded-full bg-card/85 py-2 pl-5 pr-2 shadow-[var(--shadow-soft)] backdrop-blur">
         <Logo />
         <div className="flex items-center gap-1 sm:gap-2">
-          <Link href={signedIn ? "/settings" : "/signin"} className="rounded-full px-3 py-2 text-sm text-muted hover:text-ink">{signedIn ? "My account" : "Sign in"}</Link>
+          <Link href={signedIn ? "/settings" : "/signin"} className="inline-flex min-h-11 items-center rounded-full px-3 text-sm text-muted hover:text-ink">{signedIn ? "My account" : "Sign in"}</Link>
           <ThemeToggle />
         </div>
       </header>
@@ -173,14 +171,14 @@ export default function Landing() {
         </section>
 
         <section className="py-12">
-          <div className="grid gap-8 rounded-[2.25rem] bg-night p-7 text-white shadow-[var(--shadow-float)] sm:p-10 md:grid-cols-[1.3fr_1fr] md:items-center">
+          <div className="grid gap-8 rounded-[2.25rem] bg-night p-7 text-white shadow-[var(--shadow-float)] ring-1 ring-white/10 sm:p-10 md:grid-cols-[1.3fr_1fr] md:items-center">
             <div>
               <ShieldCheck size={28} aria-hidden="true" />
               <h2 className="mt-4 text-3xl font-light tracking-tight sm:text-4xl">We keep a list of numbers, not your photo.</h2>
               <p className="mt-4 leading-relaxed text-white/75">
                 Camera frames are read once and thrown away. All that&apos;s stored is a face template: 128 numbers that can&apos;t be turned back into a picture of you. It only exists if you agree to it, and it never leaves the server.
               </p>
-              <Link href="/privacy" className="mt-5 inline-flex items-center gap-2 underline underline-offset-4">Read the privacy notice <ArrowRight size={16} aria-hidden="true" /></Link>
+              <Link href="/privacy" className="mt-3 inline-flex min-h-11 items-center gap-2 underline underline-offset-4">Read the privacy notice <ArrowRight size={16} aria-hidden="true" /></Link>
             </div>
             <div className="flex items-start gap-3 rounded-3xl bg-white/8 p-5">
               <Trash2 size={20} className="mt-0.5 shrink-0" aria-hidden="true" />
@@ -198,11 +196,11 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-line py-6 text-sm text-muted">
+      <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-line py-4 text-sm text-muted">
         <span>Rollcall</span>
         <span className="flex gap-5">
-          <Link href="/privacy" className="hover:text-ink">Privacy</Link>
-          <a href="https://github.com/LSUDOKO/ai_project" className="hover:text-ink">Source code</a>
+          <Link href="/privacy" className="inline-flex min-h-11 items-center hover:text-ink">Privacy</Link>
+          <a href="https://github.com/LSUDOKO/ai_project" className="inline-flex min-h-11 items-center hover:text-ink">Source code</a>
         </span>
       </footer>
     </div>

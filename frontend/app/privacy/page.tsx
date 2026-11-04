@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Logo } from "@/components/Shell";
+import { Panel, ThemeToggle } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Privacy" };
 
@@ -15,18 +16,18 @@ const SECTIONS = [
 export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 pb-16">
-      <header className="flex h-20 items-center"><Logo /></header>
+      <header className="flex h-20 items-center justify-between"><Logo /><ThemeToggle /></header>
       <main>
         <h1 className="text-4xl font-light tracking-tight">Privacy notice</h1>
         <p className="mt-3 text-lg text-muted">Face data is sensitive, so here is plainly what Rollcall does with it.</p>
-        <div className="mt-8 space-y-7">
+        <Panel className="mt-8 space-y-7">
           {SECTIONS.map(([title, body]) => (
             <section key={title}>
               <h2 className="text-xl font-normal">{title}</h2>
               <p className="mt-2 leading-relaxed text-muted">{body}</p>
             </section>
           ))}
-        </div>
+        </Panel>
       </main>
     </div>
   );

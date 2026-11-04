@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rollcall: Project Report</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+@page {
+  size: A4;
+  margin: 24mm 26mm 26mm;
+  @bottom-left { content: "Rollcall  ·  Project report"; font: 400 8pt "Public Sans"; color: #55655a; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 400 8pt "Public Sans"; color: #55655a; }
+}
+@page cover { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
+
+* { box-sizing: border-box; }
+html { background: #fff; }
+body { margin: 0; color: #1f2b23; font: 400 10pt/1.58 "Public Sans", sans-serif; font-feature-settings: "tnum" 1; orphans: 3; widows: 3; }
+p { margin: 0 0 3mm; }
+a { color: inherit; text-decoration: none; }
+strong { font-weight: 600; }
+code, .mono { font-family: "IBM Plex Mono", monospace; font-size: .88em; }
+
+h1 { break-before: page; break-after: avoid; margin: 0 0 7mm; padding-top: 3mm; border-top: 1.5pt solid #354b35; font-size: 23pt; font-weight: 300; line-height: 1.2; letter-spacing: -.01em; }
+h1 .num { color: #4b674a; margin-right: 3mm; }
+h2 { break-after: avoid; margin: 7mm 0 2.5mm; font-size: 12.5pt; font-weight: 500; line-height: 1.3; }
+h2 .num { color: #4b674a; margin-right: 2mm; font-weight: 400; }
+ul, ol { margin: 0 0 3mm; padding-left: 5mm; }
+li { margin-bottom: 1.2mm; }
+.lead { font-size: 12pt; line-height: 1.5; font-weight: 300; color: #354b35; margin-bottom: 5mm; }
+
+figure { break-inside: avoid; margin: 5mm 0 6mm; }
+figcaption, .tcap { font-size: 8.5pt; line-height: 1.45; color: #55655a; }
+figcaption { margin-top: 2.5mm; }
+figcaption b, .tcap b { color: #354b35; font-weight: 600; margin-right: 1.5mm; }
+.shot { display: block; width: 100%; border: .5pt solid #c8d7c4; border-radius: 1.5mm; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5mm; padding: 0 6mm; }
+.aside { display: grid; grid-template-columns: 1fr 46mm; gap: 7mm; align-items: start; break-inside: avoid; }
+.aside figure { margin: 0; }
+svg.dg { display: block; width: 100%; height: auto; }
+
+table { width: 100%; border-collapse: collapse; margin: 0 0 6mm; font-size: 8.8pt; line-height: 1.42; border-bottom: .75pt solid #354b35; }
+.tcap { margin: 5mm 0 1.5mm; break-after: avoid; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th { text-align: left; font-weight: 600; color: #354b35; border-top: .75pt solid #354b35; border-bottom: .75pt solid #354b35; padding: 1.4mm 3mm 1.4mm 0; vertical-align: bottom; }
+td { padding: 1.3mm 3mm 1.3mm 0; border-bottom: .35pt solid #c8d7c4; vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+td:last-child, th:last-child { padding-right: 0; }
+td.group { font-weight: 600; color: #4b674a; padding-top: 2.6mm; }
+table.api td:nth-child(1) { width: 12mm; }
+table.api td:nth-child(2) { width: 66mm; }
+table.api td:nth-child(3) { width: 15mm; }
+table.api code { font-size: .86em; }
+td.num, th.num { text-align: right; }
+
+.facts { display: grid; grid-template-columns: 34mm 1fr; margin: 5mm 0; border-top: .75pt solid #354b35; border-bottom: .75pt solid #354b35; font-size: 9pt; }
+.facts > * { margin: 0; padding: 1.5mm 0; border-bottom: .35pt solid #c8d7c4; }
+.facts > :nth-last-child(-n+2) { border-bottom: 0; }
+.facts dt { font-weight: 600; color: #354b35; }
+pre { font: 400 7.9pt/1.5 "IBM Plex Mono", monospace; background: #f2f8ef; border-left: 1.5pt solid #4b674a; padding: 2.5mm 3mm; margin: 0 0 4mm; white-space: pre-wrap; break-inside: avoid; }
+.note { border-left: 1.5pt solid #7c4b0c; background: #fbf7ee; padding: 2.5mm 3.5mm; margin: 4mm 0; font-size: 9.2pt; break-inside: avoid; }
+
+/* Cover */
+.cover { page: cover; position: relative; width: 210mm; height: 297mm; overflow: hidden; background: #354b35; color: #f2f8ef; break-after: page; }
+.cover svg { position: absolute; }
+.cover .mark { left: 26mm; top: 28mm; width: 11mm; height: 11mm; }
+.cover .ring { right: -44mm; top: 44mm; width: 170mm; height: 232mm; }
+.cover .title { position: absolute; left: 26mm; top: 106mm; }
+.cover .title div:first-child { font-size: 58pt; font-weight: 300; letter-spacing: -.02em; line-height: 1; }
+.cover .title div:last-child { margin-top: 7mm; width: 82mm; font-size: 14pt; font-weight: 300; line-height: 1.35; color: #d1e5cc; }
+.cover .brand { position: absolute; left: 41mm; top: 29.5mm; font-size: 12pt; font-weight: 500; }
+.cover .meta { position: absolute; left: 26mm; bottom: 26mm; font-size: 9pt; line-height: 1.65; color: #d1e5cc; }
+.cover .meta b { display: block; color: #fff; font-weight: 500; font-size: 11pt; margin-bottom: 2mm; }
+
+/* Contents */
+.contents-title { margin: 0 0 8mm; padding-top: 3mm; border-top: 1.5pt solid #354b35; font-size: 23pt; font-weight: 300; }
+#toc { list-style: none; margin: 0; padding: 0; }
+#toc li { display: grid; grid-template-columns: 10mm 1fr auto; margin: 0; font-size: 9.2pt; line-height: 1.5; }
+#toc .toc-h1 { margin-top: 2.6mm; font-weight: 500; font-size: 10pt; color: #1f2b23; }
+#toc .toc-h1 span:first-child { color: #4b674a; }
+#toc .toc-h2 { color: #55655a; }
+
+/* Diagrams */
+.dg text { font-family: "Public Sans", sans-serif; fill: #1f2b23; }
+.dg .n { font-size: 12px; font-weight: 600; }
+.dg .s { font-size: 10.5px; fill: #55655a; }
+.dg .l { font-size: 10.5px; font-weight: 500; fill: #354b35; }
+.dg .z { font-size: 11px; font-weight: 600; fill: #4b674a; }
+.dg text.halo { paint-order: stroke; stroke: #e9f2e6; stroke-width: 5px; }
+.dg .box { fill: #f2f8ef; stroke: #4b674a; stroke-width: 1; }
+.dg .ask { fill: #fff; stroke: #4b674a; stroke-width: 1; }
+.dg .focal { fill: #354b35; stroke: #354b35; }
+.dg .focal-t, .dg text.focal-t { fill: #fff; }
+.dg .focal-s, .dg text.focal-s { fill: #d1e5cc; }
+.dg .bad { fill: #efe2c9; stroke: #7c4b0c; stroke-width: 1; }
+.dg .soft { fill: #e9f2e6; stroke: none; }
+.dg .zone { fill: none; stroke: #4b674a; stroke-width: 1; stroke-dasharray: 5 4; }
+.dg .tint { fill: #e9f2e6; stroke: #4b674a; stroke-width: 1; stroke-dasharray: 5 4; }
+.dg .a { fill: none; stroke: #55655a; stroke-width: 1.25; }
+.dg .r { fill: none; stroke: #55655a; stroke-width: 1.25; stroke-dasharray: 5 4; }
+.dg .life { stroke: #c8d7c4; stroke-width: 1; }
+.dg .hd { fill: #354b35; }
+.dg .ht { font-size: 11.5px; font-weight: 600; fill: #fff; }
+.dg .c { font-size: 10.5px; }
+.dg .t { font-size: 10px; fill: #55655a; text-anchor: end; }
+.dg .sep { stroke: #c8d7c4; stroke-width: .75; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <svg class="mark" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 1a10 10 0 0 0 0 20z" fill="#d1e5cc"/><path d="M11 1a10 10 0 0 1 0 20z" fill="#efe2c9"/><rect x="10.4" y="0" width="1.2" height="22" fill="#354b35"/></svg>
+  <div class="brand">Rollcall</div>
+  <svg class="ring" viewBox="0 0 300 410" aria-hidden="true"><ellipse cx="150" cy="205" rx="143" ry="197" fill="#3d553d"/><ellipse cx="150" cy="205" rx="146" ry="200" fill="none" stroke="#a9c2a6" stroke-width="7" stroke-dasharray="1.2 6.2"/></svg>
+  <div class="title">
+    <div>Rollcall</div>
+    <div>Face-recognition attendance for real classrooms</div>
+  </div>
+  <div class="meta">
+    <b>Project report</b>
+    November 2026<br>
+    rollcall-classroom.vercel.app<br>
+    github.com/LSUDOKO/ai_project
+  </div>
+</section>
+
+<section>
+  <div class="contents-title">Contents</div>
+  <ol id="toc"></ol>
+</section>
+
+<h1 data-toc="1"><span class="num">1</span> Summary</h1>
+<p class="lead">Rollcall takes attendance by face. A teacher opens a session and points a camera at the room, and the register fills itself. Each student enrols once, on their own phone, with consent.</p>
+<p>A teacher creates a class and gets a six-character code. Students sign up, join with that code, and take five photos. Those photos become a face template of 128 numbers, and the photos are discarded. During a session, the browser sends camera frames to the API, which matches faces against that class's students only and writes attendance rows. The teacher can correct any entry by hand, even after the session ends, and export the register as a CSV that opens in Excel. Students see only their own record.</p>
+<p>The product grew out of an old desktop app built on Tkinter and OpenCV, which is kept in <code>legacy/</code>. Rollcall is a rewrite for the situation that app could not serve: many students, each with their own device, and a teacher who has a few minutes at the start of a class.</p>
+<dl class="facts">
+  <dt>Live site</dt><dd>https://rollcall-classroom.vercel.app</dd>
+  <dt>Frontend</dt><dd>Next.js 16 on Vercel</dd>
+  <dt>API</dt><dd>Flask in Docker on Render's free tier, Singapore</dd>
+  <dt>Database</dt><dd>Postgres on Neon, Singapore</dd>
+  <dt>Face models</dt><dd>OpenCV YuNet detector and SFace recogniser, compared by cosine similarity</dd>
+  <dt>Accuracy</dt><dd>On the LFW 6,000-pair benchmark at threshold 0.42: false accept 0.0% (0 of 3,000), false reject 3.4%. These are single-photo pair results on a public benchmark, not a classroom study.</dd>
+  <dt>Tests</dt><dd>10 API tests against real Postgres and the real models; a browser flow with 24 checkpoints using fake camera feeds</dd>
+</dl>
+<p>Rollcall has clear limits, set out in section 11. The most important is that it has no liveness detection: a good photo may fool it, so teachers should keep an eye on the camera. It has been tested with synthetic faces, not in a real classroom.</p>
+
+<h1 data-toc="1"><span class="num">2</span> The problem and the approach</h1>
+<h2 data-toc="2"><span class="num">2.1</span> The problem</h2>
+<p>Calling names uses up the start of every class, and a paper register is easy to sign for someone else. It then has to be copied somewhere before anyone can work out who is falling behind. Face recognition can remove the calling and the copying, but only if students accept it and teachers can trust the result. A system that keeps photos of students, or marks people the teacher cannot overrule, solves one problem by creating a worse one.</p>
+<h2 data-toc="2"><span class="num">2.2</span> Where this started</h2>
+<p>The first version was a desktop app. One machine ran a Tkinter window, captured up to 50 photos per student into a folder, trained an LBPH model, and wrote a CSV per subject. It proved the idea but needed each student to stand in front of that one machine. A later web version in the git history moved to Flask, MongoDB, MTCNN and DeepFace. Rollcall replaced that backend and its schema. Table 1 shows the three.</p>
+<div class="tcap"><b>Table 1</b> Three generations of the project.</div>
+<table>
+  <thead><tr><th></th><th>Desktop app</th><th>Web prototype</th><th>Rollcall</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Where</strong></td><td><code>legacy/</code></td><td>Git history, before commit 2930098</td><td>Current code</td></tr>
+    <tr><td><strong>Interface</strong></td><td>Tkinter window</td><td>Next.js and Flask</td><td>Next.js and Flask</td></tr>
+    <tr><td><strong>Detection</strong></td><td>Haar cascade</td><td>MTCNN</td><td>YuNet</td></tr>
+    <tr><td><strong>Recognition</strong></td><td>LBPH, trained per install</td><td>DeepFace, Facenet512</td><td>SFace, no training step</td></tr>
+    <tr><td><strong>Storage</strong></td><td>Image folder and CSV files</td><td>MongoDB</td><td>Postgres; templates, no photos</td></tr>
+  </tbody>
+</table>
+<h2 data-toc="2"><span class="num">2.3</span> The approach</h2>
+<ul>
+  <li><strong>Enrol once, on your own phone.</strong> Enrolment happens away from class time. A student's face works in every class they join.</li>
+  <li><strong>Keep numbers, not photos.</strong> Frames are decoded in memory for one request. Only a numeric template is stored, and only after explicit consent.</li>
+  <li><strong>Match against the class, not the world.</strong> A session compares faces with that class's enrolled students only, so a visitor cannot be marked present.</li>
+  <li><strong>The teacher has the last word.</strong> Every entry can be changed by hand, and the register shows whether each mark came from the camera or from a person.</li>
+  <li><strong>Refuse when unsure.</strong> A weak match, or a face that is too close to two students, is reported as not recognised rather than guessed.</li>
+  <li><strong>Fit the free tier.</strong> The whole system runs on free hosting, which shaped the choice of models (section 5.1) and the handling of cold starts (section 10.2).</li>
+</ul>
+
+<h1 data-toc="1"><span class="num">3</span> How it works for each person</h1>
+<p>The screenshots in this section come from the automated browser flow described in section 9.2. All faces are AI-generated synthetic images, not real people, and the names are invented test data.</p>
+<figure>
+  <img class="shot" src="../screenshots/landing.png" alt="Rollcall landing page">
+  <figcaption><b>Figure 1</b> The landing page, which leads with a choice between teaching and being a student. It also pings the API on load, so a sleeping server starts waking before anyone signs in.</figcaption>
+</figure>
+<h2 data-toc="2"><span class="num">3.1</span> The teacher</h2>
+<p><strong>Create a class.</strong> After signing up as a teacher, the home page lists classes and recent sessions. Naming a class generates a six-character code from an alphabet that leaves out easily confused characters such as 0, O, 1, I and L, because codes get read aloud. The teacher shares the code or an invite link.</p>
+<figure>
+  <div class="two">
+    <img class="shot" src="../screenshots/teacher-home.png" alt="Teacher home page in the light theme">
+    <img class="shot" src="../screenshots/teacher-home-dark.png" alt="Teacher home page in the dark theme">
+  </div>
+  <figcaption><b>Figure 2</b> The teacher's home page in the light and dark themes.</figcaption>
+</figure>
+<p><strong>Watch the roster fill.</strong> The class page shows who has joined and who has enrolled a face. Students without a face can still be marked by hand.</p>
+<figure>
+  <img class="shot" src="../screenshots/teacher-class.png" alt="Class page with roster and join code">
+  <figcaption><b>Figure 3</b> The class page: roster with enrolment status, class code, invite link and session history.</figcaption>
+</figure>
+<p><strong>Run a session.</strong> The teacher starts a session, optionally names the topic, and starts scanning on a laptop or phone. Each face gets a box on the video: green with a name when it is matched, amber with "Not recognised" when it is not. The register beside the video updates when someone new is marked.</p>
+<figure>
+  <img class="shot" src="../screenshots/teacher-session-live.png" alt="Live session with a recognised face and the register">
+  <figcaption><b>Figure 4</b> A live session. The camera has matched one student and recorded the time and method. The face is synthetic.</figcaption>
+</figure>
+<p><strong>Correct and finish.</strong> Tapping a student's status switches it between present and absent, recorded as a manual mark. Ending the session shows a summary. The register can still be corrected afterwards, and it exports as a CSV with the name, roll number, email, status, time and method. The class page also exports the full register, with every student against every finished session.</p>
+<figure>
+  <div class="two">
+    <img class="shot" src="../screenshots/teacher-session-unknown.png" alt="A stranger marked as not recognised">
+    <img class="shot" src="../screenshots/teacher-session-summary.png" alt="Finished session summary">
+  </div>
+  <figcaption><b>Figure 5</b> Left: a face outside the class stays "Not recognised" and marks nobody. Right: the finished session, with two of three present.</figcaption>
+</figure>
+<h2 data-toc="2"><span class="num">3.2</span> The student</h2>
+<p><strong>Sign up and join.</strong> An invite link joins the class automatically after sign-up. Otherwise the student types the code. The home page shows a short checklist: add a roll number, enrol a face, join a class.</p>
+<p><strong>Enrol.</strong> The camera button stays disabled until the consent box is ticked. The page then asks for five photos, looking straight ahead, left, right, up and down. Each photo is checked straight away, so a bad one is caught when it is taken. A student can then test recognition before class. The test tells them whether the camera knows them, and nothing goes on their attendance.</p>
+<figure>
+  <div class="three">
+    <img class="shot" src="../screenshots/student-home.png" alt="Student home page">
+    <img class="shot" src="../screenshots/student-enrol.png" alt="Enrolling a face, photo 3 of 5">
+    <img class="shot" src="../screenshots/student-face-test.png" alt="Testing recognition">
+  </div>
+  <figcaption><b>Figure 6</b> On a phone: the student's home page, enrolment at photo 3 of 5, and the recognition test. The faces are synthetic.</figcaption>
+</figure>
+<div class="aside">
+  <div>
+    <p><strong>See your own record.</strong> The attendance page lists finished sessions since the student joined the class, with present and absent counts and a rate. It filters by class and date, and exports to a CSV. A session appears only after the teacher ends it. Students have no way to see anyone else's attendance.</p>
+    <p><strong>Stay in control.</strong> From the My face page and from settings, a student can delete their template or their whole account at any time. Enrolment is optional, and a teacher can always mark a student by hand instead.</p>
+  </div>
+  <figure>
+    <img class="shot" src="../screenshots/student-attendance.png" alt="Student attendance history">
+    <figcaption><b>Figure 7</b> A student's own attendance.</figcaption>
+  </figure>
+</div>
+
+<h1 data-toc="1"><span class="num">4</span> System architecture</h1>
+<p>Rollcall has three deployed parts. Vercel serves the web app. The browser then calls the API on Render directly, across origins, so no attendance data or camera frame passes through Vercel. The API is the only part that talks to the database, and the only place face templates are read.</p>
+<figure>
+<svg class="dg" data-export="architecture" viewBox="0 0 640 456" role="img" aria-labelledby="arch-title arch-desc">
+  <title id="arch-title">Rollcall system architecture</title>
+  <desc id="arch-desc">The browser loads pages from Vercel and calls the Flask API on Render, which runs the face models and stores data in Postgres on Neon.</desc>
+  <defs><marker id="arch-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0.8 L7 4 L0 7.2z" fill="#55655a"/></marker></defs>
+  <rect class="zone" x="8" y="8" width="190" height="412" rx="8"/>
+  <rect class="tint" x="312" y="128" width="320" height="176" rx="8"/>
+  <rect class="zone" x="312" y="8" width="320" height="104" rx="8"/>
+  <rect class="zone" x="312" y="328" width="320" height="92" rx="8"/>
+  <text class="z" x="20" y="28">Browser</text>
+  <text class="s" x="20" y="42">Teacher or student device</text>
+  <text class="z" x="324" y="28">Vercel</text>
+  <text class="z" x="324" y="148">Render free tier, Singapore (Docker)</text>
+  <path class="a" d="M344 66 H183" marker-end="url(#arch-arrow)"/>
+  <text class="l" x="255" y="59" text-anchor="middle">HTML and JS</text>
+  <path class="a" d="M183 188 H327" marker-end="url(#arch-arrow)"/>
+  <text class="l" x="255" y="167" text-anchor="middle">HTTPS, bearer token</text>
+  <text class="l" x="255" y="181" text-anchor="middle">JSON, JPEG frames</text>
+  <path class="r" d="M328 228 H183" marker-end="url(#arch-arrow)"/>
+  <text class="l" x="255" y="243" text-anchor="middle">JSON replies</text>
+  <path class="a" d="M103 300 V249" marker-end="url(#arch-arrow)"/>
+  <text class="l" x="111" y="278">Video frames</text>
+  <path class="a" d="M464 212 H491" marker-end="url(#arch-arrow)"/>
+  <path class="a" d="M396 264 V339" marker-end="url(#arch-arrow)"/>
+  <text class="l" x="404" y="320">Pool of up to 4 connections</text>
+  <rect class="box" x="24" y="52" width="158" height="196" rx="6"/>
+  <text class="n" x="36" y="74">Rollcall web app</text>
+  <text class="s" x="36" y="94">Pages run in the browser.</text>
+  <text class="s" x="36" y="110">Holds its own sign-in</text>
+  <text class="s" x="36" y="124">token in localStorage.</text>
+  <text class="s" x="36" y="140">Takes frames, 640 px wide,</text>
+  <text class="s" x="36" y="154">and uploads them.</text>
+  <text class="s" x="36" y="170">Builds CSV exports.</text>
+  <rect class="box" x="24" y="300" width="158" height="52" rx="6"/>
+  <text class="n" x="36" y="322">Camera</text>
+  <text class="s" x="36" y="338">Opens only on request</text>
+  <text class="s" x="20" y="386">Untrusted: the person using it</text>
+  <text class="s" x="20" y="400">controls this device.</text>
+  <rect class="box" x="344" y="36" width="256" height="60" rx="6"/>
+  <text class="n" x="356" y="56">Next.js 16 site</text>
+  <text class="s" x="356" y="72">rollcall-classroom.vercel.app</text>
+  <text class="s" x="356" y="86">Serves the app. Holds no user data.</text>
+  <rect class="box focal" x="328" y="160" width="136" height="104" rx="6"/>
+  <text class="n focal-t" x="340" y="182">Flask API</text>
+  <text class="s focal-s" x="340" y="200">Gunicorn: 1 worker,</text>
+  <text class="s focal-s" x="340" y="214">16 threads. Checks</text>
+  <text class="s focal-s" x="340" y="228">token, role and class</text>
+  <text class="s focal-s" x="340" y="242">ownership.</text>
+  <rect class="box" x="492" y="160" width="124" height="104" rx="6"/>
+  <text class="n" x="504" y="182">faces.py</text>
+  <text class="s" x="504" y="200">YuNet and SFace,</text>
+  <text class="s" x="504" y="214">in the image. Frames</text>
+  <text class="s" x="504" y="228">stay in memory for</text>
+  <text class="s" x="504" y="242">one request.</text>
+  <text class="s" x="412" y="294">Templates are compared only here.</text>
+  <rect class="box" x="328" y="340" width="288" height="52" rx="6"/>
+  <text class="n" x="340" y="361">Postgres</text>
+  <text class="s" x="340" y="378">Accounts, templates, classes, sessions, attendance</text>
+  <text class="z" x="324" y="411">Neon, Singapore</text>
+  <rect class="zone" x="8" y="438" width="24" height="12" rx="2"/>
+  <text class="s" x="38" y="448">Trust boundary</text>
+  <path class="a" d="M130 444 H162" marker-end="url(#arch-arrow)"/>
+  <text class="s" x="168" y="448">Request</text>
+  <path class="r" d="M224 444 H256" marker-end="url(#arch-arrow)"/>
+  <text class="s" x="262" y="448">Reply</text>
+</svg>
+<figcaption><b>Figure 8</b> System architecture and trust boundaries. Face templates are written and read inside the Render and Neon boundaries, and no API response includes them.</figcaption>
+</figure>
+<div class="tcap"><b>Table 2</b> Components.</div>
+<table>
+  <thead><tr><th style="width:36mm">Component</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td><code>frontend/</code></td><td>Next.js 16 and React 19 with Tailwind CSS. Pages are client components that call the API through <code>lib/api.ts</code>.</td></tr>
+    <tr><td><code>backend/app.py</code></td><td>All 28 routes: accounts, enrolment, classes, sessions, recognition and reports. Applies <code>schema.sql</code> on every boot, so each statement is idempotent.</td></tr>
+    <tr><td><code>backend/faces.py</code></td><td>Image decoding, detection, embedding and matching. Inference runs behind one lock because the OpenCV models hold per-call state.</td></tr>
+    <tr><td><code>backend/schema.sql</code></td><td>Five tables, their indexes, and the rule that a class has one open session at a time.</td></tr>
+  </tbody>
+</table>
+<h2 data-toc="2"><span class="num">4.1</span> A live session, message by message</h2>
+<p>A session is an ordinary database row. Starting one twice returns the same open session, enforced by a partial unique index. Scanning is a loop in the browser: send a frame, wait for the reply, wait 700 ms, repeat. A slow server therefore slows the loop down rather than building up a queue of requests. Figure 9 shows the messages.</p>
+<figure>
+<svg class="dg" data-export="live-session" viewBox="0 0 640 556" role="img" aria-labelledby="seq-title seq-desc">
+  <title id="seq-title">Live session sequence</title>
+  <desc id="seq-desc">Messages between the teacher's browser, the API and Postgres when a session starts, scans, is corrected by hand and ends.</desc>
+  <defs><marker id="seq-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0.8 L7 4 L0 7.2z" fill="#55655a"/></marker></defs>
+  <rect class="soft" x="8" y="126" width="624" height="218" rx="6"/>
+  <rect class="soft" x="8" y="354" width="624" height="78" rx="6"/>
+  <rect class="soft" x="8" y="442" width="624" height="104" rx="6"/>
+  <line class="life" x1="72" y1="40" x2="72" y2="552"/>
+  <line class="life" x1="340" y1="40" x2="340" y2="552"/>
+  <line class="life" x1="568" y1="40" x2="568" y2="552"/>
+  <rect class="hd" x="12" y="8" width="120" height="32" rx="6"/><text class="ht" x="72" y="28" text-anchor="middle">Teacher browser</text>
+  <rect class="hd" x="280" y="8" width="120" height="32" rx="6"/><text class="ht" x="340" y="28" text-anchor="middle">Rollcall API</text>
+  <rect class="hd" x="508" y="8" width="120" height="32" rx="6"/><text class="ht" x="568" y="28" text-anchor="middle">Postgres</text>
+
+  <path class="a" d="M72 64 H339" marker-end="url(#seq-arrow)"/><text class="l" x="206" y="58" text-anchor="middle">POST /api/classes/:id/sessions</text>
+  <path class="a" d="M340 88 H567" marker-end="url(#seq-arrow)"/><text class="l" x="454" y="82" text-anchor="middle">INSERT session</text>
+  <path class="r" d="M340 112 H73" marker-end="url(#seq-arrow)"/><text class="l" x="206" y="106" text-anchor="middle">201, session id</text>
+
+  <text class="z halo" x="16" y="142">Repeats 700 ms after each reply, until paused</text>
+  <path class="a" d="M72 168 H339" marker-end="url(#seq-arrow)"/><text class="l" x="206" y="162" text-anchor="middle">POST /api/sessions/:id/recognize, JPEG</text>
+  <path class="a" d="M340 192 H567" marker-end="url(#seq-arrow)"/><text class="l" x="454" y="186" text-anchor="middle">Check owner, read class roster</text>
+  <path class="r" d="M568 216 H341" marker-end="url(#seq-arrow)"/><text class="l" x="454" y="210" text-anchor="middle">Students with templates</text>
+  <rect class="box focal" x="260" y="226" width="160" height="26" rx="6"/><text class="n focal-t" x="340" y="243" text-anchor="middle">Detect, embed, compare</text>
+  <path class="a" d="M340 280 H567" marker-end="url(#seq-arrow)"/><text class="l" x="454" y="274" text-anchor="middle">INSERT attendance, if matched</text>
+  <path class="r" d="M340 304 H73" marker-end="url(#seq-arrow)"/><text class="l" x="206" y="298" text-anchor="middle">Boxes, names, statuses</text>
+  <path class="a" d="M72 332 H339" marker-end="url(#seq-arrow)"/><text class="l" x="206" y="326" text-anchor="middle">GET /api/sessions/:id, after a new mark</text>
+
+  <text class="z halo" x="16" y="370">Teacher corrects by hand</text>
+  <path class="a" d="M72 396 H339" marker-end="url(#seq-arrow)"/><text class="l" x="206" y="390" text-anchor="middle">PUT /api/sessions/:id/students/:sid</text>
+  <path class="a" d="M340 420 H567" marker-end="url(#seq-arrow)"/><text class="l" x="454" y="414" text-anchor="middle">INSERT manual mark, or DELETE</text>
+
+  <text class="z halo" x="16" y="458">Teacher ends the session</text>
+  <path class="a" d="M72 484 H339" marker-end="url(#seq-arrow)"/><text class="l" x="206" y="478" text-anchor="middle">POST /api/sessions/:id/end</text>
+  <path class="a" d="M340 508 H567" marker-end="url(#seq-arrow)"/><text class="l" x="454" y="502" text-anchor="middle">UPDATE ended_at</text>
+  <path class="r" d="M340 532 H73" marker-end="url(#seq-arrow)"/><text class="l" x="206" y="526" text-anchor="middle">Final register</text>
+</svg>
+<figcaption><b>Figure 9</b> A live session. Solid arrows are requests and dashed arrows are replies. Manual corrections also work after the session has ended; recognition does not, and returns 409.</figcaption>
+</figure>
+
+<h1 data-toc="1"><span class="num">5</span> Face recognition pipeline</h1>
+<h2 data-toc="2"><span class="num">5.1</span> Why YuNet and SFace replaced DeepFace</h2>
+<p>The previous backend detected faces with MTCNN and computed embeddings with DeepFace's Facenet512 model, which brings TensorFlow with it. That stack does not fit a 512 MB instance, and the free tier provides exactly that. Rollcall now needs only <code>opencv-python-headless</code> and two ONNX models from the OpenCV Zoo: YuNet, about 230 KB, and SFace, about 37 MB. The Dockerfile bakes both into the image and pins them by SHA-256, so a cold start never downloads anything. Container measurements are in section 9.4.</p>
+<p>This was a choice driven by memory. Facenet512 and SFace were not compared on the same benchmark, so this report makes no claim that one is more accurate than the other.</p>
+<p>A template is 128 numbers scaled to unit length, so cosine similarity is a dot product. The values in Table 3 are constants in <code>faces.py</code> and <code>app.py</code>.</p>
+<div class="tcap"><b>Table 3</b> Recognition settings in the code.</div>
+<table>
+  <thead><tr><th>Setting</th><th class="num">Value</th><th style="padding-left:5mm">Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>MAX_SIDE</code></td><td class="num">640 px</td><td style="padding-left:5mm">Longest side of an image after decoding</td></tr>
+    <tr><td><code>DETECTION_SCORE</code></td><td class="num">0.8</td><td style="padding-left:5mm">YuNet confidence required to report a face</td></tr>
+    <tr><td><code>MIN_FACE_PX</code></td><td class="num">60 px</td><td style="padding-left:5mm">Smaller faces are ignored</td></tr>
+    <tr><td><code>MATCH_THRESHOLD</code></td><td class="num">0.42</td><td style="padding-left:5mm">Similarity needed to count as the same person; set by <code>FACE_MATCH_THRESHOLD</code></td></tr>
+    <tr><td><code>MATCH_MARGIN</code></td><td class="num">0.05</td><td style="padding-left:5mm">How far the best match must beat the runner-up</td></tr>
+    <tr><td>Duplicate check</td><td class="num">0.52</td><td style="padding-left:5mm">Threshold plus 0.1: a template this close to another account is refused</td></tr>
+    <tr><td><code>ENROLL_SHOTS</code></td><td class="num">5</td><td style="padding-left:5mm">Photos required for enrolment</td></tr>
+  </tbody>
+</table>
+<h2 data-toc="2"><span class="num">5.2</span> Enrolment</h2>
+<p>Enrolment has to catch two kinds of mistake: bad photos, and photos of the wrong person. The second check on the server handles mixed photos. Each of the five embeddings is compared with the average of the <em>other four</em>. Comparing it with an average of all five would let a different person through, because they would partly be matching themselves.</p>
+<p>The third check enforces one person, one account. The new template is compared with every enrolled user in the database, not only those in one class. This stops a friend's face being enrolled on your account so that they can sign in for you. The stricter 0.52 threshold keeps two similar-looking students from blocking each other.</p>
+<figure>
+<svg class="dg" data-export="enrolment" viewBox="0 0 640 612" role="img" aria-labelledby="enrol-title enrol-desc">
+  <title id="enrol-title">Face enrolment flow</title>
+  <desc id="enrol-desc">Consent, five checked photos, then server checks for one face per photo, a leave-one-out comparison and a duplicate check before the template is stored.</desc>
+  <defs><marker id="enrol-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0.8 L7 4 L0 7.2z" fill="#55655a"/></marker></defs>
+  <rect class="soft" x="8" y="196" width="624" height="408" rx="6"/>
+  <text class="z" x="190" y="214">On the server: photos stay in memory for this request</text>
+
+  <path class="a" d="M178 52 V71" marker-end="url(#enrol-arrow)"/>
+  <path class="a" d="M178 116 V135" marker-end="url(#enrol-arrow)"/>
+  <path class="a" d="M178 180 V227" marker-end="url(#enrol-arrow)"/>
+  <path class="a" d="M178 272 V291" marker-end="url(#enrol-arrow)"/><text class="s" x="186" y="286">yes</text>
+  <path class="a" d="M178 336 V355" marker-end="url(#enrol-arrow)"/>
+  <path class="a" d="M178 400 V419" marker-end="url(#enrol-arrow)"/><text class="s" x="186" y="414">yes</text>
+  <path class="a" d="M178 464 V483" marker-end="url(#enrol-arrow)"/>
+  <path class="a" d="M178 528 V547" marker-end="url(#enrol-arrow)"/><text class="s" x="186" y="542">yes</text>
+
+  <path class="a" d="M340 84 H423" marker-end="url(#enrol-arrow)"/><text class="l" x="382" y="78" text-anchor="middle">not one face</text>
+  <path class="r" d="M424 104 H341" marker-end="url(#enrol-arrow)"/><text class="l" x="382" y="118" text-anchor="middle">try again</text>
+  <path class="a" d="M340 250 H423" marker-end="url(#enrol-arrow)"/><text class="l" x="382" y="244" text-anchor="middle">no</text>
+  <path class="a" d="M340 378 H423" marker-end="url(#enrol-arrow)"/><text class="l" x="382" y="372" text-anchor="middle">no</text>
+  <path class="r" d="M524 228 V117" marker-end="url(#enrol-arrow)"/><text class="l" x="532" y="168">Browser clears</text><text class="l" x="532" y="182">that photo</text>
+  <path class="a" d="M340 506 H423" marker-end="url(#enrol-arrow)"/><text class="l" x="382" y="500" text-anchor="middle">no</text>
+
+  <rect class="box" x="16" y="8" width="324" height="44" rx="6"/><text class="n" x="28" y="26">Tick the consent box</text><text class="s" x="28" y="42">Browser: the camera button stays disabled until then</text>
+  <rect class="box" x="16" y="72" width="324" height="44" rx="6"/><text class="n" x="28" y="90">Take five photos</text><text class="s" x="28" y="106">Each one is checked by POST /api/me/face/check</text>
+  <rect class="box" x="16" y="136" width="324" height="44" rx="6"/><text class="n" x="28" y="154">Send all five</text><text class="s" x="28" y="170">POST /api/me/face. 400 without consent or five photos</text>
+  <rect class="ask" x="16" y="228" width="324" height="44" rx="22"/><text class="n" x="36" y="255">Exactly one face in each photo?</text>
+  <rect class="box" x="16" y="292" width="324" height="44" rx="6"/><text class="n" x="28" y="310">Embed each photo</text><text class="s" x="28" y="326">SFace: 128 numbers, unit length</text>
+  <rect class="box focal" x="16" y="356" width="324" height="44" rx="22"/><text class="n focal-t" x="36" y="374">Does each photo match the other four?</text><text class="s focal-s" x="36" y="390">Similarity with the average of the other four at least 0.42</text>
+  <rect class="box" x="16" y="420" width="324" height="44" rx="6"/><text class="n" x="28" y="438">Build the template</text><text class="s" x="28" y="454">Average of all five, scaled to unit length</text>
+  <rect class="box focal" x="16" y="484" width="324" height="44" rx="22"/><text class="n focal-t" x="36" y="502">Is this face new to Rollcall?</text><text class="s focal-s" x="36" y="518">Below 0.52 against every other enrolled account</text>
+  <rect class="box" x="16" y="548" width="324" height="44" rx="6"/><text class="n" x="28" y="566">Store the template, discard the photos</text><text class="s" x="28" y="582">Saves the template and the enrolment and consent times</text>
+
+  <rect class="box" x="424" y="72" width="200" height="44" rx="6"/><text class="n" x="436" y="98">Retake that photo</text>
+  <rect class="bad" x="424" y="228" width="200" height="172" rx="6"/>
+  <text class="n" x="436" y="252">422 with the photo's number</text>
+  <text class="s" x="436" y="272">No clear face was found</text>
+  <text class="s" x="436" y="288">More than one face was found</text>
+  <text class="s" x="436" y="304">Photo doesn't look like the others</text>
+  <text class="s" x="436" y="328">Nothing is stored.</text>
+  <rect class="bad" x="424" y="484" width="200" height="44" rx="6"/><text class="n" x="436" y="502">409, nothing is stored</text><text class="s" x="436" y="518">Enrolled on another account</text>
+</svg>
+<figcaption><b>Figure 10</b> Enrolment. The two dark steps are the checks that stop a wrong or second face getting on an account.</figcaption>
+</figure>
+<h2 data-toc="2"><span class="num">5.3</span> Recognition in a session</h2>
+<p>Figure 11 follows one frame from the camera to an attendance row. The exactly-one-face rule belongs to enrolment and the self-test. A live session deliberately handles every face in the frame, because a teacher may have several students in view. It has its own guards instead: faces are handled biggest first, one student can be claimed only once per frame, and the database primary key allows one attendance row per student per session. If a repeat match reaches the insert, it reports "already" and changes nothing.</p>
+<p>With one enrolled student in a class there is no runner-up, so only the threshold applies. A student who has not enrolled cannot match, and can only be marked by hand.</p>
+<figure>
+<svg class="dg" data-export="recognition" viewBox="0 0 640 676" role="img" aria-labelledby="rec-title rec-desc">
+  <title id="rec-title">Recognition pipeline</title>
+  <desc id="rec-desc">A camera frame is checked, decoded and searched for faces. Each face is embedded and compared with the class, must pass a threshold, margin and once-per-frame test, and then produces an attendance row.</desc>
+  <defs><marker id="rec-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0.8 L7 4 L0 7.2z" fill="#55655a"/></marker></defs>
+  <rect class="soft" x="8" y="196" width="624" height="412" rx="6"/>
+  <text class="z" x="190" y="214">For every face in the frame, biggest first</text>
+
+  <path class="a" d="M178 52 V71" marker-end="url(#rec-arrow)"/>
+  <path class="a" d="M178 116 V135" marker-end="url(#rec-arrow)"/>
+  <path class="a" d="M178 180 V227" marker-end="url(#rec-arrow)"/>
+  <path class="a" d="M178 272 V291" marker-end="url(#rec-arrow)"/>
+  <path class="a" d="M178 336 V355" marker-end="url(#rec-arrow)"/>
+  <path class="a" d="M178 400 V419" marker-end="url(#rec-arrow)"/><text class="s" x="186" y="414">yes</text>
+  <path class="a" d="M178 464 V483" marker-end="url(#rec-arrow)"/><text class="s" x="186" y="478">yes</text>
+  <path class="a" d="M178 528 V547" marker-end="url(#rec-arrow)"/><text class="s" x="186" y="542">yes</text>
+  <path class="a" d="M178 592 V627" marker-end="url(#rec-arrow)"/>
+
+  <path class="a" d="M340 94 H423" marker-end="url(#rec-arrow)"/><text class="l" x="382" y="88" text-anchor="middle">fails</text>
+  <path class="a" d="M340 158 H423" marker-end="url(#rec-arrow)"/><text class="l" x="382" y="152" text-anchor="middle">no face</text>
+  <path class="a" d="M340 378 H423" marker-end="url(#rec-arrow)"/><text class="l" x="382" y="372" text-anchor="middle">no</text>
+  <path class="a" d="M340 442 H423" marker-end="url(#rec-arrow)"/><text class="l" x="382" y="436" text-anchor="middle">no</text>
+  <path class="a" d="M340 506 H423" marker-end="url(#rec-arrow)"/><text class="l" x="382" y="500" text-anchor="middle">no</text>
+  <path class="a" d="M340 570 H423" marker-end="url(#rec-arrow)"/><text class="l" x="382" y="564" text-anchor="middle">reports</text>
+
+  <rect class="box" x="16" y="8" width="324" height="44" rx="6"/><text class="n" x="28" y="26">Capture a frame</text><text class="s" x="28" y="42">Browser: canvas to JPEG, up to 640 px wide</text>
+  <rect class="box" x="16" y="72" width="324" height="44" rx="6"/><text class="n" x="28" y="90">Check the request</text><text class="s" x="28" y="106">Token, teacher role, own session, session still open</text>
+  <rect class="box" x="16" y="136" width="324" height="44" rx="6"/><text class="n" x="28" y="154">Decode and detect</text><text class="s" x="28" y="170">Longest side 640 px. YuNet score 0.8, face at least 60 px</text>
+  <rect class="box" x="16" y="228" width="324" height="44" rx="6"/><text class="n" x="28" y="246">Embed</text><text class="s" x="28" y="262">SFace: align the face, 128 numbers, unit length</text>
+  <rect class="box" x="16" y="292" width="324" height="44" rx="6"/><text class="n" x="28" y="310">Compare with this class only</text><text class="s" x="28" y="326">Cosine similarity with its enrolled students</text>
+  <rect class="ask" x="16" y="356" width="324" height="44" rx="22"/><text class="n" x="36" y="383">Is the best score at least 0.42?</text>
+  <rect class="ask" x="16" y="420" width="324" height="44" rx="22"/><text class="n" x="36" y="438">Does it beat the runner-up by 0.05?</text><text class="s" x="36" y="454">Margin test: too close to two students means no match</text>
+  <rect class="ask" x="16" y="484" width="324" height="44" rx="22"/><text class="n" x="36" y="511">Student not yet matched in this frame?</text>
+  <rect class="box focal" x="16" y="548" width="324" height="44" rx="6"/><text class="n focal-t" x="28" y="566">Write the attendance row</text><text class="s focal-s" x="28" y="582">Method face, with the score. ON CONFLICT DO NOTHING</text>
+  <rect class="box" x="16" y="628" width="324" height="44" rx="6"/><text class="n" x="28" y="646">Show the result</text><text class="s" x="28" y="662">Browser draws the boxes; a new mark refreshes the register</text>
+
+  <rect class="box" x="424" y="72" width="200" height="44" rx="6"/><text class="n" x="436" y="90">401, 403, 404 or 409</text><text class="s" x="436" y="106">Nothing is processed</text>
+  <rect class="box" x="424" y="136" width="200" height="44" rx="6"/><text class="n" x="436" y="154">Empty list</text><text class="s" x="436" y="170">The browser tries the next frame</text>
+  <text class="n" x="436" y="240">The one-face rule</text>
+  <text class="s" x="436" y="258">Enrolment and the self-test need</text>
+  <text class="s" x="436" y="272">exactly one face in the frame.</text>
+  <text class="s" x="436" y="290">A live session handles every face,</text>
+  <text class="s" x="436" y="304">each one on its own.</text>
+  <rect class="bad" x="424" y="356" width="200" height="172" rx="6"/>
+  <text class="n" x="436" y="426">Not recognised</text>
+  <text class="s" x="436" y="444">Status unknown. Nothing is</text>
+  <text class="s" x="436" y="458">written, and the browser draws</text>
+  <text class="s" x="436" y="472">an amber box.</text>
+  <rect class="box" x="424" y="548" width="200" height="44" rx="6"/><text class="n" x="436" y="566">marked or already</text><text class="s" x="436" y="582">Already if the row existed</text>
+</svg>
+<figcaption><b>Figure 11</b> From camera frame to attendance row. A face that fails any of the three tests marks nobody.</figcaption>
+</figure>
+<h2 data-toc="2"><span class="num">5.4</span> Choosing the threshold</h2>
+<p><code>backend/tests/evaluate_threshold.py</code> runs the real detector and recogniser over labelled face pairs and prints false accept and false reject rates for thresholds from 0.30 to 0.60. On the LFW standard 6,000 pairs, 0.42 was chosen: no different-person pair reached it, and the highest different-person score was 0.412. False rejects at that point were 3.4%.</p>
+<p>In a register, a false accept marks an absent student present with no visible sign, while a false reject costs a retry on the next frame or a tap by the teacher. That is why the threshold sits just above the highest different-person score. The gap is narrow, only 0.008, so the result should not be read as a guarantee. The margin test and class-only matching add protection that the benchmark does not measure. Full results are in section 9.3.</p>
+
+<h1 data-toc="1"><span class="num">6</span> Data model</h1>
+<p>Five tables hold everything. All foreign keys cascade on delete, which is what makes account deletion complete: removing a user removes their classes, enrolments and attendance. The schema has no table for photos, because no photos are kept.</p>
+<figure>
+<svg class="dg" data-export="data-model" viewBox="0 0 640 384" role="img" aria-labelledby="er-title er-desc">
+  <title id="er-title">Rollcall data model</title>
+  <desc id="er-desc">Users teach classes and join them through enrollments. Classes have sessions, and attendance links sessions to students.</desc>
+  <defs><marker id="er-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0.8 L7 4 L0 7.2z" fill="#55655a"/></marker></defs>
+  <path class="a" d="M236 63 H197" marker-end="url(#er-arrow)"/>
+  <path class="a" d="M236 259 H197" marker-end="url(#er-arrow)"/>
+  <path class="a" d="M326 204 V145" marker-end="url(#er-arrow)"/>
+  <path class="a" d="M456 63 H417" marker-end="url(#er-arrow)"/>
+  <path class="a" d="M546 204 V127" marker-end="url(#er-arrow)"/>
+  <path class="a" d="M546 322 V336 a8 8 0 0 1 -8 8 H114 a8 8 0 0 1 -8 -8 V325" marker-end="url(#er-arrow)"/>
+  <text class="s" x="228" y="56" text-anchor="end">n</text><text class="s" x="204" y="56">1</text>
+  <text class="s" x="228" y="252" text-anchor="end">n</text><text class="s" x="204" y="252">1</text>
+  <text class="s" x="333" y="198">n</text><text class="s" x="333" y="160">1</text>
+  <text class="s" x="448" y="56" text-anchor="end">n</text><text class="s" x="424" y="56">1</text>
+  <text class="s" x="553" y="198">n</text><text class="s" x="553" y="142">1</text>
+  <text class="s" x="553" y="334">n</text><text class="s" x="113" y="337">1</text>
+
+  <rect class="box" x="16" y="8" width="180" height="316" rx="6"/>
+  <path class="hd" d="M22 8 H190 a6 6 0 0 1 6 6 V36 H16 V14 a6 6 0 0 1 6 -6z"/><text class="ht" x="26" y="27">users</text>
+  <text class="c" x="26" y="49"><tspan font-weight="600">id</tspan></text><text class="t" x="188" y="49">BIGINT PK</text>
+  <text class="c" x="26" y="67">email</text><text class="t" x="188" y="67">TEXT UNIQUE</text>
+  <text class="c" x="26" y="85">password_hash</text><text class="t" x="188" y="85">TEXT</text>
+  <text class="c" x="26" y="103">name</text><text class="t" x="188" y="103">TEXT</text>
+  <text class="c" x="26" y="121">role</text><text class="t" x="188" y="121">student, teacher</text>
+  <text class="c" x="26" y="139">department</text><text class="t" x="188" y="139">TEXT</text>
+  <text class="c" x="26" y="157">phone</text><text class="t" x="188" y="157">TEXT</text>
+  <text class="c" x="26" y="175">employee_id</text><text class="t" x="188" y="175">TEXT</text>
+  <text class="c" x="26" y="193">roll_no</text><text class="t" x="188" y="193">TEXT</text>
+  <text class="c" x="26" y="211">year</text><text class="t" x="188" y="211">TEXT</text>
+  <text class="c" x="26" y="229">division</text><text class="t" x="188" y="229">TEXT</text>
+  <text class="c" x="26" y="247">semester</text><text class="t" x="188" y="247">TEXT</text>
+  <rect x="17" y="252" width="178" height="18" fill="#efe2c9"/>
+  <text class="c" x="26" y="265"><tspan font-weight="600">face_embedding</tspan></text><text class="t" x="188" y="265">REAL[]</text>
+  <text class="c" x="26" y="283">face_enrolled_at</text><text class="t" x="188" y="283">TIMESTAMPTZ</text>
+  <text class="c" x="26" y="301">face_consent_at</text><text class="t" x="188" y="301">TIMESTAMPTZ</text>
+  <text class="c" x="26" y="319">created_at</text><text class="t" x="188" y="319">TIMESTAMPTZ</text>
+
+  <rect class="box" x="236" y="8" width="180" height="136" rx="6"/>
+  <path class="hd" d="M242 8 H410 a6 6 0 0 1 6 6 V36 H236 V14 a6 6 0 0 1 6 -6z"/><text class="ht" x="246" y="27">classes</text>
+  <text class="c" x="246" y="49"><tspan font-weight="600">id</tspan></text><text class="t" x="408" y="49">BIGINT PK</text>
+  <text class="c" x="246" y="67">teacher_id</text><text class="t" x="408" y="67">FK users</text>
+  <text class="c" x="246" y="85">name</text><text class="t" x="408" y="85">TEXT</text>
+  <text class="c" x="246" y="103">subject</text><text class="t" x="408" y="103">TEXT</text>
+  <text class="c" x="246" y="121">join_code</text><text class="t" x="408" y="121">TEXT UNIQUE</text>
+  <text class="c" x="246" y="139">created_at</text><text class="t" x="408" y="139">TIMESTAMPTZ</text>
+
+  <rect class="box" x="236" y="204" width="180" height="82" rx="6"/>
+  <path class="hd" d="M242 204 H410 a6 6 0 0 1 6 6 V232 H236 V210 a6 6 0 0 1 6 -6z"/><text class="ht" x="246" y="223">enrollments</text>
+  <text class="c" x="246" y="245"><tspan font-weight="600">class_id</tspan></text><text class="t" x="408" y="245">PK, FK classes</text>
+  <text class="c" x="246" y="263"><tspan font-weight="600">student_id</tspan></text><text class="t" x="408" y="263">PK, FK users</text>
+  <text class="c" x="246" y="281">joined_at</text><text class="t" x="408" y="281">TIMESTAMPTZ</text>
+
+  <rect class="box" x="456" y="8" width="176" height="118" rx="6"/>
+  <path class="hd" d="M462 8 H626 a6 6 0 0 1 6 6 V36 H456 V14 a6 6 0 0 1 6 -6z"/><text class="ht" x="466" y="27">sessions</text>
+  <text class="c" x="466" y="49"><tspan font-weight="600">id</tspan></text><text class="t" x="624" y="49">BIGINT PK</text>
+  <text class="c" x="466" y="67">class_id</text><text class="t" x="624" y="67">FK classes</text>
+  <text class="c" x="466" y="85">topic</text><text class="t" x="624" y="85">TEXT</text>
+  <text class="c" x="466" y="103">started_at</text><text class="t" x="624" y="103">TIMESTAMPTZ</text>
+  <text class="c" x="466" y="121">ended_at</text><text class="t" x="624" y="121">TIMESTAMPTZ</text>
+
+  <rect class="box" x="456" y="204" width="176" height="118" rx="6"/>
+  <path class="hd" d="M462 204 H626 a6 6 0 0 1 6 6 V232 H456 V210 a6 6 0 0 1 6 -6z"/><text class="ht" x="466" y="223">attendance</text>
+  <text class="c" x="466" y="245"><tspan font-weight="600">session_id</tspan></text><text class="t" x="624" y="245">PK, FK sessions</text>
+  <text class="c" x="466" y="263"><tspan font-weight="600">student_id</tspan></text><text class="t" x="624" y="263">PK, FK users</text>
+  <text class="c" x="466" y="281">marked_at</text><text class="t" x="624" y="281">TIMESTAMPTZ</text>
+  <text class="c" x="466" y="299">method</text><text class="t" x="624" y="299">face, manual</text>
+  <text class="c" x="466" y="317">similarity</text><text class="t" x="624" y="317">REAL</text>
+  <text class="s" x="16" y="376">Arrows run from a foreign key to the table it references. The highlighted column is the biometric template.</text>
+</svg>
+<figcaption><b>Figure 12</b> Entity relationships, from <code>backend/schema.sql</code>.</figcaption>
+</figure>
+<h2 data-toc="2"><span class="num">6.1</span> Rules worth knowing</h2>
+<ul>
+  <li><strong>A row means present.</strong> The <code>attendance</code> table has no absent rows. A student is absent from a session if they had joined by then and have no row. Removing a mark therefore deletes the row.</li>
+  <li><strong>Late joiners are not penalised.</strong> Totals count only sessions that started after the student's <code>joined_at</code>.</li>
+  <li><strong>One open session per class.</strong> The partial unique index <code>one_open_session</code> covers <code>class_id</code> where <code>ended_at</code> is null, so two teachers' tabs cannot open rival sessions.</li>
+  <li><strong>One row per student per session.</strong> The primary key, with <code>ON CONFLICT DO NOTHING</code>, makes repeated recognition harmless. The first mark's time and method are kept.</li>
+  <li><strong>Consent is recorded.</strong> <code>face_consent_at</code> is set with the template and cleared with it.</li>
+  <li><strong>Emails are lowercase.</strong> A check constraint enforces it, and the API lowercases on the way in.</li>
+</ul>
+
+<h1 data-toc="1"><span class="num">7</span> API summary</h1>
+<p>Requests and responses are JSON. Authenticated routes need an <code>Authorization: Bearer</code> header. The Role column shows who may call each route: another role receives 403. A teacher who asks for another teacher's class or session receives 404, so the API does not reveal that it exists.</p>
+<div class="tcap"><b>Table 4</b> All 28 routes in <code>backend/app.py</code>.</div>
+<table class="api">
+  <thead><tr><th>Method</th><th>Path</th><th>Role</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td colspan="4" class="group">Service and accounts</td></tr>
+    <tr><td>GET</td><td><code>/health</code></td><td>Public</td><td>Health check, also used to wake the server</td></tr>
+    <tr><td>POST</td><td><code>/api/signup</code></td><td>Public</td><td>Create an account and return a token</td></tr>
+    <tr><td>POST</td><td><code>/api/signin</code></td><td>Public</td><td>Sign in and return a token</td></tr>
+    <tr><td>GET</td><td><code>/api/me</code></td><td>Any</td><td>Read own profile</td></tr>
+    <tr><td>PATCH</td><td><code>/api/me</code></td><td>Any</td><td>Update own profile</td></tr>
+    <tr><td>POST</td><td><code>/api/me/password</code></td><td>Any</td><td>Change password, signing out other devices</td></tr>
+    <tr><td>DELETE</td><td><code>/api/me</code></td><td>Any</td><td>Delete the account, after confirming the password</td></tr>
+    <tr><td colspan="4" class="group">Student</td></tr>
+    <tr><td>POST</td><td><code>/api/me/face/check</code></td><td>Student</td><td>Count faces in a frame; once enrolled, test the match</td></tr>
+    <tr><td>POST</td><td><code>/api/me/face</code></td><td>Student</td><td>Enrol from five photos, with consent</td></tr>
+    <tr><td>DELETE</td><td><code>/api/me/face</code></td><td>Student</td><td>Delete the template and consent record</td></tr>
+    <tr><td>GET</td><td><code>/api/student/classes</code></td><td>Student</td><td>Own classes with attendance totals</td></tr>
+    <tr><td>POST</td><td><code>/api/student/classes/join</code></td><td>Student</td><td>Join a class by code</td></tr>
+    <tr><td>DELETE</td><td><code>/api/student/classes/:id</code></td><td>Student</td><td>Leave a class</td></tr>
+    <tr><td>GET</td><td><code>/api/student/attendance</code></td><td>Student</td><td>Own history, with class and date filters</td></tr>
+    <tr><td colspan="4" class="group">Teacher: classes</td></tr>
+    <tr><td>GET</td><td><code>/api/classes</code></td><td>Teacher</td><td>Own classes and recent sessions</td></tr>
+    <tr><td>POST</td><td><code>/api/classes</code></td><td>Teacher</td><td>Create a class and its join code</td></tr>
+    <tr><td>GET</td><td><code>/api/classes/:id</code></td><td>Teacher</td><td>Class, roster and sessions</td></tr>
+    <tr><td>PATCH</td><td><code>/api/classes/:id</code></td><td>Teacher</td><td>Rename a class or change its subject</td></tr>
+    <tr><td>DELETE</td><td><code>/api/classes/:id</code></td><td>Teacher</td><td>Delete a class and its registers</td></tr>
+    <tr><td>GET</td><td><code>/api/classes/:id/report</code></td><td>Teacher</td><td>Students by sessions, for the export</td></tr>
+    <tr><td>PATCH</td><td><code>/api/classes/:id/students/:sid</code></td><td>Teacher</td><td>Edit a student in this class</td></tr>
+    <tr><td>DELETE</td><td><code>/api/classes/:id/students/:sid</code></td><td>Teacher</td><td>Remove a student from this class</td></tr>
+    <tr><td>POST</td><td><code>/api/classes/:id/sessions</code></td><td>Teacher</td><td>Start a session, or return the one already open</td></tr>
+    <tr><td colspan="4" class="group">Teacher: sessions</td></tr>
+    <tr><td>GET</td><td><code>/api/sessions/:id</code></td><td>Teacher</td><td>Session with its register</td></tr>
+    <tr><td>POST</td><td><code>/api/sessions/:id/recognize</code></td><td>Teacher</td><td>Match the faces in one frame and mark attendance</td></tr>
+    <tr><td>PUT</td><td><code>/api/sessions/:id/students/:sid</code></td><td>Teacher</td><td>Set present or absent by hand, even after the end</td></tr>
+    <tr><td>POST</td><td><code>/api/sessions/:id/end</code></td><td>Teacher</td><td>End the session and return the register</td></tr>
+    <tr><td>DELETE</td><td><code>/api/sessions/:id</code></td><td>Teacher</td><td>Delete a session and its attendance</td></tr>
+  </tbody>
+</table>
+
+<h1 data-toc="1"><span class="num">8</span> Security and privacy</h1>
+<p>Face data is sensitive, and attendance is a record people may rely on. Table 5 lists each control and its limit.</p>
+<div class="tcap"><b>Table 5</b> Security and privacy controls.</div>
+<table>
+  <thead><tr><th style="width:27mm">Control</th><th>What the code does</th><th style="width:43mm">Limit</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Tokens</strong></td><td>Signed with <code>itsdangerous</code>, valid for 14 days. Each carries the last 12 characters of the password hash, so changing a password signs out every other device.</td><td>Kept in <code>localStorage</code>, which a script running on the site could read.</td></tr>
+    <tr><td><strong>Passwords</strong></td><td>Hashed with Werkzeug's salted scrypt. Deleting an account needs the password again.</td><td>Email addresses are not verified.</td></tr>
+    <tr><td><strong>Role checks</strong></td><td>Every protected route declares its role, checked against the database on each request. Students cannot reach teacher routes or mark themselves present.</td><td>Anyone can sign up as a teacher, which only gives access to classes they create.</td></tr>
+    <tr><td><strong>Class scoping</strong></td><td>Every class and session lookup includes the teacher's id. Another teacher's data returns 404. Recognition compares only the class's enrolled students.</td><td></td></tr>
+    <tr><td><strong>Embeddings stay on the server</strong></td><td>The column is left out of the public column lists and is read only to compare faces. A test asserts that no response contains "embedding" or "password".</td><td>Stored as plain numbers in Postgres. The app adds no column encryption.</td></tr>
+    <tr><td><strong>Photos</strong></td><td>Frames are decoded in memory and never written to disk or the database. Enrolment previews stay on the student's device until they are uploaded.</td><td>Frames travel to the API as data, over HTTPS.</td></tr>
+    <tr><td><strong>Consent</strong></td><td>The API requires <code>consent</code> to be exactly <code>true</code> and records when it was given. The camera button waits for the tick box.</td><td></td></tr>
+    <tr><td><strong>Deletion</strong></td><td>A student can delete the template at once, or the whole account, which cascades to attendance. A teacher's deletion also removes their classes and registers.</td><td>Backups held by the database host were not examined.</td></tr>
+    <tr><td><strong>CORS</strong></td><td>Only the production site and origins in <code>FRONTEND_ORIGIN</code> are allowed, and only the two headers the app needs.</td><td>CORS limits browsers. It is not access control; the token is.</td></tr>
+    <tr><td><strong>Rate limits</strong></td><td>See Table 6. Attempts over the limit receive 429.</td><td>In memory, per process, and reset on restart.</td></tr>
+    <tr><td><strong>CSV exports</strong></td><td>A cell starting with <code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>, a tab or a carriage return gets a leading apostrophe, so a hostile name cannot run as a formula in Excel. Quotes are escaped.</td><td></td></tr>
+    <tr><td><strong>Input limits</strong></td><td>Requests are capped at 12 MB, and unexpected errors return a generic message.</td><td></td></tr>
+  </tbody>
+</table>
+<div class="tcap"><b>Table 6</b> Rate limits. This is basic abuse protection and nothing stronger.</div>
+<table>
+  <thead><tr><th>Action</th><th>Limit</th><th>Counted by</th><th>Note</th></tr></thead>
+  <tbody>
+    <tr><td>Sign up</td><td>20 per hour</td><td>Forwarded address</td><td>The header can be set by the client, so this can be evaded</td></tr>
+    <tr><td>Sign in</td><td>10 per 5 minutes</td><td>Email</td><td>Someone else's failed attempts can lock an account for 5 minutes</td></tr>
+    <tr><td>Change password, delete account</td><td>10 per 5 minutes</td><td>User</td><td>Shared counter</td></tr>
+    <tr><td>Join a class</td><td>20 per 5 minutes</td><td>User</td><td>Slows guessing of class codes</td></tr>
+  </tbody>
+</table>
+<h2 data-toc="2"><span class="num">8.1</span> Who can see what</h2>
+<p>A teacher sees the students who joined their class: name, email, profile details, and attendance in that class, including the match score for camera marks. A student sees only their own record. Nobody can see a face template through the app, including the student it belongs to. The template is numbers rather than an image, but it is still biometric data and is treated as sensitive.</p>
+
+
+<h1 data-toc="1"><span class="num">9</span> Testing and results</h1>
+<h2 data-toc="2"><span class="num">9.1</span> API tests</h2>
+<p><code>backend/tests/test_api.py</code> holds 10 tests. They run against a real Postgres and the real face models, with nothing mocked.</p>
+<div class="tcap"><b>Table 7</b> The API tests.</div>
+<table>
+  <thead><tr><th style="width:56mm">Test</th><th>What it establishes</th></tr></thead>
+  <tbody>
+    <tr><td><code>signup_validates_and_rejects_duplicates</code></td><td>Bad email, short password and unknown role are refused; a duplicate email gets 409, ignoring case</td></tr>
+    <tr><td><code>signin_and_token_rules</code></td><td>Wrong password and forged token fail; old tokens stop working after a password change</td></tr>
+    <tr><td><code>signin_is_rate_limited</code></td><td>The eleventh attempt gets 429</td></tr>
+    <tr><td><code>cors_only_allows_the_site</code></td><td>An allowed origin gets the header and another origin does not</td></tr>
+    <tr><td><code>full_attendance_flow</code></td><td>Join, enrol, consent, mixed-photo refusal, duplicate refusal, recognition, strangers, ending, manual correction, reports and filters</td></tr>
+    <tr><td><code>data_is_scoped_to_its_owner</code></td><td>Another teacher gets 404 on eight routes; a student gets 403 on teacher routes</td></tr>
+    <tr><td><code>only_class_members_can_match</code></td><td>An enrolled student outside the class stays unknown</td></tr>
+    <tr><td><code>no_embedding_ever_leaves_the_server</code></td><td>Four responses contain neither "embedding" nor "password"</td></tr>
+    <tr><td><code>bad_images_and_delete_account</code></td><td>Bad images get 400; account deletion needs the password and takes effect</td></tr>
+  </tbody>
+</table>
+<h2 data-toc="2"><span class="num">9.2</span> Browser flow</h2>
+<p><code>frontend/e2e/flow.mjs</code> drives the whole product through four real Chromium browsers, one per person, each with a fake camera feed of synthetic faces: a teacher on a desktop viewport and three students on phone viewports. It passes 24 checkpoints and fails if any browser logs a console error. Along the way it checks that:</p>
+<ul>
+  <li>the invite link joins a class automatically, and a wrong code gets a clear message;</li>
+  <li>the camera button waits for consent;</li>
+  <li>a student is redirected away from teacher pages;</li>
+  <li>the camera marks two enrolled students, leaves a stranger unrecognised, and does not mark the student with no template;</li>
+  <li>manual corrections work, and the session ends with 2 of 3 present;</li>
+  <li>all three CSV exports contain the right rows;</li>
+  <li>each student sees the correct result;</li>
+  <li>password change, account deletion and face data deletion work.</li>
+</ul>
+<h2 data-toc="2" style="break-before:page"><span class="num">9.3</span> Recognition accuracy</h2>
+<p>Accuracy was measured with <code>backend/tests/evaluate_threshold.py</code> on the Labeled Faces in the Wild (LFW) standard 6,000 pairs. One pair was skipped.</p>
+<div class="tcap"><b>Table 8</b> LFW results at threshold 0.42.</div>
+<table>
+  <thead><tr><th>Measure</th><th class="num">Result</th></tr></thead>
+  <tbody>
+    <tr><td>Same-person pairs evaluated</td><td class="num">2,999</td></tr>
+    <tr><td>Different-person pairs evaluated</td><td class="num">3,000</td></tr>
+    <tr><td>False accept rate</td><td class="num">0.0% (0 of 3,000)</td></tr>
+    <tr><td>False reject rate</td><td class="num">3.4%</td></tr>
+    <tr><td>Highest different-person score</td><td class="num">0.412</td></tr>
+  </tbody>
+</table>
+<div class="note"><strong>How to read these numbers.</strong> They are single-photo pair results on a public benchmark, not a classroom study. The app enrols five photos, and classroom light, angles and cameras will differ from LFW, so accuracy in a real room has not been measured. Zero false accepts out of 3,000 does not mean false accepts cannot happen.</div>
+<h2 data-toc="2"><span class="num">9.4</span> Container performance</h2>
+<div class="tcap"><b>Table 9</b> Container performance at free-tier limits (512 MB, 0.1 CPU).</div>
+<table>
+  <thead><tr><th>Measure</th><th class="num">Result</th></tr></thead>
+  <tbody>
+    <tr><td>Memory at idle</td><td class="num">about 102 MB</td></tr>
+    <tr><td>Peak memory, 30 face checks plus 16 signups at once</td><td class="num">195 MB</td></tr>
+    <tr><td>Recognition, one face, median / worst</td><td class="num">0.7 s / 0.8 s</td></tr>
+    <tr><td>Recognition, six faces, median</td><td class="num">2.0 s</td></tr>
+    <tr><td>Enrolment, five photos, median</td><td class="num">3.4 s</td></tr>
+    <tr><td>Sign-in, median</td><td class="num">1.1 s</td></tr>
+    <tr><td>Container start to first healthy response</td><td class="num">about 10 s</td></tr>
+  </tbody>
+</table>
+<p>Measured in the Docker image limited to Render's free-tier size (512 MB, 0.1 CPU) with local Postgres, so database latency to Neon isn't included. Waking from sleep on Render takes longer.</p>
+
+<h1 data-toc="1"><span class="num">10</span> Deployment and operations</h1>
+<div class="tcap"><b>Table 10</b> Where each part runs.</div>
+<table>
+  <thead><tr><th style="width:26mm">Part</th><th style="width:30mm">Host</th><th>Details</th></tr></thead>
+  <tbody>
+    <tr><td>Frontend</td><td>Vercel</td><td><code>https://rollcall-classroom.vercel.app</code></td></tr>
+    <tr><td>API</td><td>Render free tier, Singapore</td><td><code>https://rollcall-api-w318.onrender.com</code>. Docker image on Python 3.11, defined by <code>render.yaml</code>, with health checks on <code>/health</code>. Gunicorn runs 1 worker with 4 threads.</td></tr>
+    <tr><td>Database</td><td>Neon, Singapore</td><td>Postgres. The API applies <code>schema.sql</code> at each boot.</td></tr>
+  </tbody>
+</table>
+<h2 data-toc="2"><span class="num">10.1</span> Environment variables</h2>
+<div class="tcap"><b>Table 11</b> Configuration. Secrets are set in each host's dashboard and are not in the repository.</div>
+<table>
+  <thead><tr><th style="width:46mm">Variable</th><th style="width:20mm">Where</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td><code>DATABASE_URL</code></td><td>API</td><td>Postgres connection string. Required.</td></tr>
+    <tr><td><code>SECRET_KEY</code></td><td>API</td><td>Signs tokens. Required. Generated by the Render blueprint. Changing it signs everyone out.</td></tr>
+    <tr><td><code>FRONTEND_ORIGIN</code></td><td>API</td><td>Extra allowed sites, comma-separated. The production site is always allowed.</td></tr>
+    <tr><td><code>FACE_MATCH_THRESHOLD</code></td><td>API</td><td>Optional. Defaults to 0.42.</td></tr>
+    <tr><td><code>MODEL_DIR</code></td><td>API</td><td>Optional. Defaults to <code>models/</code> beside <code>faces.py</code>.</td></tr>
+    <tr><td><code>PORT</code></td><td>API</td><td>Set to 10000 in the Dockerfile; 5000 when running <code>app.py</code> directly.</td></tr>
+    <tr><td><code>NEXT_PUBLIC_API_URL</code></td><td>Frontend</td><td>Base URL of the API, fixed at build time.</td></tr>
+  </tbody>
+</table>
+<h2 data-toc="2"><span class="num">10.2</span> Living with the free tier</h2>
+<ul>
+  <li><strong>Sleeping server.</strong> Render's free tier sleeps when idle, so the first request afterwards can take about a minute. If a request takes longer than 3.5 seconds, the site shows a banner saying the server is waking up. The landing page calls <code>/health</code> on load, so the wake-up often starts before anyone signs in. Scan requests do not trigger the banner, and a failed scan shows an error while the loop keeps trying.</li>
+  <li><strong>Sleeping database.</strong> Neon closes connections when its compute scales to zero. The connection pool checks each connection before use, with a pool of one to four connections.</li>
+  <li><strong>512 MB of memory.</strong> This decided the choice of models (section 5.1). It is also why the service runs one worker process.</li>
+  <li><strong>One process.</strong> Inference runs one call at a time behind a lock, and rate-limit counters live in that process. This is fine for one instance, and neither would carry over to several.</li>
+  <li><strong>Before a class.</strong> A teacher should open the site a minute or two beforehand if the server may be asleep.</li>
+</ul>
+
+<h1 data-toc="1"><span class="num">11</span> Known limits and next steps</h1>
+<p>These limits are real and affect how Rollcall should be used today. The right-hand column shows what would address each one. Nothing there has been started.</p>
+<div class="tcap"><b>Table 12</b> Known limits.</div>
+<table>
+  <thead><tr><th style="width:32mm">Limit</th><th>What it means</th><th style="width:50mm">Next step</th></tr></thead>
+  <tbody>
+    <tr><td><strong>No liveness detection</strong></td><td>A good photo may fool the camera. Teachers should watch the camera and correct the register by hand.</td><td>Add a liveness check, and test it against printed and on-screen photos.</td></tr>
+    <tr><td><strong>No forgot-password email</strong></td><td>There is no email service yet, so a forgotten password cannot be reset by the user.</td><td>Add an email provider and a reset flow with single-use links.</td></tr>
+    <tr><td><strong>Free-tier cold start</strong></td><td>The first request after idle can take about a minute. The site explains the wait, but the wait remains.</td><td>Move the API to an always-on instance.</td></tr>
+    <tr><td><strong>In-memory rate limits, one process</strong></td><td>Counters reset on restart, and the design does not extend to several instances. Recognition requests run one at a time.</td><td>Keep counters in a shared store, and run more processes if classes need parallel recognition.</td></tr>
+    <tr><td><strong>Lighting and angle matter</strong></td><td>Small faces are ignored, and poor light lowers scores. The app works best with one or two people in view at a time.</td><td>Measure in real rooms, then write guidance on camera placement.</td></tr>
+    <tr><td><strong>Only synthetic faces in product testing</strong></td><td>The API tests and browser flow use AI-generated faces. The LFW benchmark is the only measurement on photographs of real people. No real class has used it for a study.</td><td>Run a consented pilot with a real class, and record false accepts and rejects.</td></tr>
+    <tr><td><strong>Fairness not measured</strong></td><td>Accuracy has not been broken down across groups of people, and the overall LFW figures cannot show this.</td><td>Include this in any pilot, before relying on the register for decisions about students.</td></tr>
+  </tbody>
+</table>
+<p>Taken together, this means the register is an assistant to the teacher, and the teacher remains responsible for it. Rollcall should not be the only evidence in any decision that affects a student until a real pilot has measured its error rates.</p>
+
+<h1 data-toc="appendix">Appendix: local setup</h1>
+<p>This needs Docker, Python 3.11 and Node 22 or later. Commands run from the repository root.</p>
+<h2>Database</h2>
+<pre>docker run -d --name rollcall-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=rollcall \
+  -p 5433:5432 postgres:17-alpine</pre>
+<h2>Backend</h2>
+<pre>cd backend
+python3.11 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -r requirements.txt
+mkdir -p models
+curl -fL -o models/face_detection_yunet_2023mar.onnx \
+  https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx
+curl -fL -o models/face_recognition_sface_2021dec.onnx \
+  https://github.com/opencv/opencv_zoo/raw/main/models/face_recognition_sface/face_recognition_sface_2021dec.onnx
+cp .env.example .env          # then set SECRET_KEY
+python app.py                 # http://localhost:5000</pre>
+<h2>Frontend</h2>
+<pre>cd frontend
+npm install
+cp .env.example .env.local
+npm run dev                   # http://localhost:3000</pre>
+<h2>Tests</h2>
+<p>The API tests drop and recreate the <code>public</code> schema of their database, which by default is the same local database as above. Never point <code>TEST_DATABASE_URL</code> at data you want to keep.</p>
+<pre>cd backend &amp;&amp; pip install pytest
+FACE_DIR=&lt;folder with at least 6 JPEGs, one distinct face each&gt; pytest tests/test_api.py
+
+cd frontend
+FACE_DIR=&lt;folder with p1.y4m p2.y4m p3.y4m room.y4m&gt; node e2e/flow.mjs</pre>
+<p>The browser flow needs the site and API running, and the faces in its feeds must not already be enrolled, because the duplicate check would refuse them. The README has more detail, including how to rebuild this report and the GIFs.</p>
+
+</body>
+</html>

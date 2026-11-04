@@ -148,8 +148,8 @@ function DeleteAccount() {
 export default function SettingsPage() {
   return (
     <AppShell>
-      <PageTitle title="Settings" />
       <div className="mx-auto max-w-3xl space-y-4">
+        <PageTitle title="Settings" />
         <Profile />
         <Password />
         <DeleteAccount />

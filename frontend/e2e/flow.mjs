@@ -47,7 +47,10 @@ async function person(name, face, viewport = DESKTOP) {
 }
 
 const shot = async (page, name) => {
-  if (SHOTS) await page.screenshot({ path: path.join(SHOTS, `${name}.png`) });
+  if (!SHOTS) return;
+  await page.mouse.move(0, 0);
+  await page.waitForTimeout(900); // Let the page's entrance animation finish.
+  await page.screenshot({ path: path.join(SHOTS, `${name}.png`) });
 };
 
 async function signUp({ page, name, email, password }, url, displayName) {
@@ -92,7 +95,7 @@ async function run() {
   await signUp(teacher, "/signup?role=teacher", "Priya Sharma");
   await teacher.page.getByText("Create your first class").waitFor();
   await teacher.page.getByRole("button", { name: "New class" }).first().click();
-  await teacher.page.getByLabel(/Class name/).fill(`CSE Section B ${RUN}`);
+  await teacher.page.getByLabel(/Class name/).fill("CSE Section B");
   await teacher.page.getByLabel(/Subject/).fill("Data Structures");
   await teacher.page.getByRole("button", { name: "Create class" }).click();
   await teacher.page.waitForURL(/\/teacher\/class\/\d+/);
@@ -102,7 +105,7 @@ async function run() {
 
   // Asha arrives through the invite link and is added automatically.
   await signUp(asha, `/signup?role=student&code=${code}`, "Asha Verma");
-  await asha.page.getByRole("heading", { name: new RegExp(`CSE Section B ${RUN}`) }).waitFor();
+  await asha.page.getByRole("heading", { name: /CSE Section B/ }).waitFor();
   step("invite link joined the class automatically");
   await shot(asha.page, "student-home");
 
@@ -129,12 +132,12 @@ async function run() {
   await daniel.page.getByText(/No class has that code/).waitFor();
   await daniel.page.getByLabel("Class code").fill(code);
   await daniel.page.getByRole("button", { name: "Join class" }).click();
-  await daniel.page.getByRole("heading", { name: new RegExp(`CSE Section B ${RUN}`) }).waitFor();
+  await daniel.page.getByRole("heading", { name: /CSE Section B/ }).waitFor();
   await enrolFace(daniel);
 
   // Mei joins but never enrols, so she can only be marked by hand.
   await signUp(mei, `/signup?role=student&code=${code}`, "Mei Tan");
-  await mei.page.getByRole("heading", { name: new RegExp(`CSE Section B ${RUN}`) }).waitFor();
+  await mei.page.getByRole("heading", { name: /CSE Section B/ }).waitFor();
 
   // Students can't open teacher pages.
   await asha.page.goto(`${BASE}/teacher`);
@@ -190,7 +193,7 @@ async function run() {
   assert.match(sessionCsv, /"Mei Tan","CSE-077".*"Absent"/);
   step("session export has the right rows");
 
-  await teacher.page.getByRole("link", { name: new RegExp(`CSE Section B ${RUN}`) }).click();
+  await teacher.page.getByRole("link", { name: /CSE Section B/ }).click();
   await teacher.page.waitForURL(/\/teacher\/class\/\d+/);
   const [classFile] = await Promise.all([teacher.page.waitForEvent("download"), teacher.page.getByRole("button", { name: "Export to Excel" }).click()]);
   const classCsv = await readFile(await classFile.path(), "utf8");

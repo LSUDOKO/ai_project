@@ -48,7 +48,7 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
   );
 }
 
-export const inputClass = "w-full rounded-2xl border border-line bg-raised px-4 py-3 text-base outline-none placeholder:text-muted/80 focus:border-forest";
+export const inputClass = "w-full rounded-2xl border border-muted/75 bg-raised px-4 py-3 text-base outline-none placeholder:text-muted focus:border-forest";
 
 const CHIP_TONES = {
   neutral: "bg-raised text-ink",
@@ -98,7 +98,8 @@ export function Empty({ title, children }: { title: string; children?: ReactNode
 }
 
 /** Percentage ring: the signature circular reading from SplitSide, used for attendance rates. */
-export function Ring({ value, size = 64, label }: { value: number; size?: number; label: string }) {
+/** value null means nothing to measure yet: an empty track and a dash, never a misleading 0%. */
+export function Ring({ value, size = 64, label }: { value: number | null; size?: number; label: string }) {
   const stroke = 4;
   const r = (size - stroke * 2) / 2;
   const c = 2 * Math.PI * r;
@@ -106,17 +107,17 @@ export function Ring({ value, size = 64, label }: { value: number; size?: number
     <span className="relative inline-flex shrink-0 items-center justify-center" style={{ width: size, height: size }} role="img" aria-label={label}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute inset-0 -rotate-90" aria-hidden="true">
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeOpacity="0.18" strokeWidth={stroke} />
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - Math.min(100, value) / 100)} className="transition-[stroke-dashoffset] duration-700" />
+        {value !== null && <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - Math.min(100, value) / 100)} className="transition-[stroke-dashoffset] duration-700" />}
       </svg>
-      <span className="text-sm font-medium">{value}%</span>
+      <span className="text-sm font-medium tabular-nums">{value === null ? "–" : `${value}%`}</span>
     </span>
   );
 }
 
 export function Stat({ label, value, tone }: { label: string; value: ReactNode; tone?: "good" | "stop" }) {
   return (
-    <div className="rounded-3xl bg-raised px-4 py-3 shadow-[var(--shadow-soft)]">
-      <p className={`text-3xl font-light ${tone === "good" ? "text-good" : tone === "stop" ? "text-stop" : ""}`}>{value}</p>
+    <div className="min-w-0 rounded-3xl bg-raised px-4 py-3 shadow-[var(--shadow-soft)]">
+      <p className={`text-2xl font-light tabular-nums sm:text-3xl ${tone === "good" ? "text-good" : tone === "stop" ? "text-stop" : ""}`}>{value}</p>
       <p className="mt-0.5 text-sm text-muted">{label}</p>
     </div>
   );
@@ -131,9 +132,9 @@ export function Modal({ open, onClose, title, children }: { open: boolean; onClo
     if (!open && dialog.open) dialog.close();
   }, [open]);
   return (
-    <dialog ref={ref} onClose={onClose} className="m-auto w-[calc(100%-2rem)] max-w-lg rounded-panel bg-card p-6 text-ink shadow-[var(--shadow-float)]">
+    <dialog ref={ref} onClose={onClose} className="m-auto w-[calc(100%-2rem)] max-w-lg overscroll-contain rounded-panel bg-card p-5 text-ink shadow-[var(--shadow-float)] sm:p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="text-xl font-normal">{title}</h2>
+        <h2 className="min-w-0 text-xl font-normal [overflow-wrap:anywhere]">{title}</h2>
         <IconButton label="Close" onClick={onClose}>
           <X size={18} aria-hidden="true" />
         </IconButton>
