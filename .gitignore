@@ -184,3 +184,5 @@ frontend/.next/
 bash.exe.stackdump
 *.zip
 *.tsbuildinfo
+# Face models are downloaded at build time
+backend/models/

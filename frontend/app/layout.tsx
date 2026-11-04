@@ -1,25 +1,36 @@
+import type { Metadata, Viewport } from "next";
+import { Public_Sans } from "next/font/google";
+import { WakeBanner } from "@/components/WakeBanner";
 import "./globals.css";
-import type { Metadata } from "next";
+
+const font = Public_Sans({ variable: "--font-public", subsets: ["latin"], weight: ["300", "400", "500", "600"] });
 
 export const metadata: Metadata = {
-  title: "Face Recognition System",
-  description: "Full-stack Flask + Next.js Face Recognition App",
+  title: { default: "Rollcall: attendance at a glance", template: "%s · Rollcall" },
+  description: "Face recognition attendance for real classrooms. Students enrol once, teachers point a camera, and the register fills itself. No photos stored.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#dde9da" },
+    { media: "(prefers-color-scheme: dark)", color: "#131a15" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+};
+
+/** Runs before first paint so the saved theme never flashes. */
+const THEME_BOOT = `(function(){var e=document.documentElement,t=null;try{t=localStorage.getItem("rollcall-theme")}catch(_){}e.dataset.theme=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light"})()`;
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-gray-900 text-gray-100 min-h-screen">
+    <html lang="en" className={`${font.variable} antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+      </head>
+      <body className="min-h-dvh">
         {children}
-        
-        {/* Footer */}
-        <footer className="bg-gray-800 text-gray-400 text-center py-4 mt-auto">
-          &copy; {new Date().getFullYear()} Face Recognition System. All rights reserved.
-        </footer>
+        <WakeBanner />
       </body>
     </html>
   );
