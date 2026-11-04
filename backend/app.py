@@ -43,7 +43,8 @@ app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024
 app.json.sort_keys = False
 app.json.default = lambda o: o.isoformat() if isinstance(o, (datetime, date)) else str(o)
 
-origins = [o.strip() for o in os.getenv("FRONTEND_ORIGIN", "http://localhost:3000").split(",") if o.strip()]
+PRODUCTION_SITE = "https://rollcall-classroom.vercel.app"
+origins = [PRODUCTION_SITE, *(o.strip() for o in os.getenv("FRONTEND_ORIGIN", "http://localhost:3000").split(",") if o.strip())]
 CORS(app, origins=origins, allow_headers=["Authorization", "Content-Type"], max_age=86400)
 
 SECRET_KEY = os.environ["SECRET_KEY"]

@@ -186,3 +186,6 @@ bash.exe.stackdump
 *.tsbuildinfo
 # Face models are downloaded at build time
 backend/models/
+
+# The Python "lib/" rule above must not swallow frontend source
+!frontend/lib/
