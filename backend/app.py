@@ -39,7 +39,7 @@ STUDENT_COLUMNS = """u.id, u.email, u.name, u.department, u.phone, u.roll_no AS 
   u.semester, u.face_enrolled_at IS NOT NULL AS "faceEnrolled\""""
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024
+app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # Five large photos, several of them held at once.
 app.json.sort_keys = False
 app.json.default = lambda o: o.isoformat() if isinstance(o, (datetime, date)) else str(o)
 
@@ -106,7 +106,7 @@ def run(sql, *params):
 
 
 def body():
-    data = request.get_json(silent=True)
+    data = request.get_json(silent=True, cache=False)  # No cache: don't keep the raw bytes beside the parsed copy.
     if not isinstance(data, dict):
         raise ApiError("Expected a JSON body.")
     return data
@@ -136,6 +136,20 @@ def rate_limit(key, limit, window):
         if len(hits) >= limit:
             raise ApiError("Too many attempts. Please wait a few minutes and try again.", 429)
         hits.append(now)
+
+
+# scrypt takes 32 MB and about 1 s at 0.1 CPU. One at a time, or a class signing in together runs out of memory.
+_hash_lock = threading.Lock()
+
+
+def hash_password(password):
+    with _hash_lock:
+        return generate_password_hash(password)
+
+
+def verify_password(password_hash, password):
+    with _hash_lock:
+        return check_password_hash(password_hash, password)
 
 
 def issue_token(user_id, password_hash):
@@ -197,7 +211,8 @@ def health():
 @app.post("/api/signup")
 def signup():
     data = body()
-    rate_limit(("signup", request.headers.get("X-Forwarded-For", request.remote_addr)), 20, 3600)
+    # Generous: a whole class may sign up from one school network. The header can be spoofed, so this only slows casual abuse.
+    rate_limit(("signup", request.headers.get("X-Forwarded-For", request.remote_addr)), 200, 3600)
     name = clean(data, "name", "Name", required=True)
     email = clean(data, "email", "Email", required=True, limit=254).lower()
     password = data.get("password")
@@ -208,7 +223,7 @@ def signup():
         raise ApiError("Password must be at least 8 characters.")
     if role not in ("student", "teacher"):
         raise ApiError("Choose whether you are a student or a teacher.")
-    password_hash = generate_password_hash(password)
+    password_hash = hash_password(password)
     try:
         row = one(
             """INSERT INTO users (email, password_hash, name, role, department, employee_id)
@@ -228,7 +243,7 @@ def signin():
     password = data.get("password")
     rate_limit(("signin", email), 10, 300)
     user = one("SELECT id, password_hash FROM users WHERE email = %s", email)
-    if not user or not isinstance(password, str) or not check_password_hash(user["password_hash"], password):
+    if not user or not isinstance(password, str) or not verify_password(user["password_hash"], password):
         raise ApiError("Incorrect email or password.", 401)
     g.user_id = user["id"]
     return jsonify(token=issue_token(user["id"], user["password_hash"]), user=current_user())
@@ -260,11 +275,11 @@ def change_password():
     data = body()
     rate_limit(("password", g.user_id), 10, 300)
     new = data.get("newPassword")
-    if not check_password_hash(g.password_hash, str(data.get("currentPassword", ""))):
+    if not verify_password(g.password_hash, str(data.get("currentPassword", ""))):
         raise ApiError("Your current password is incorrect.", 403)
     if not isinstance(new, str) or not 8 <= len(new) <= 200:
         raise ApiError("New password must be at least 8 characters.")
-    password_hash = generate_password_hash(new)
+    password_hash = hash_password(new)
     run("UPDATE users SET password_hash = %s WHERE id = %s", password_hash, g.user_id)
     return jsonify(token=issue_token(g.user_id, password_hash))
 
@@ -274,7 +289,7 @@ def change_password():
 def delete_me():
     data = body()
     rate_limit(("password", g.user_id), 10, 300)
-    if not check_password_hash(g.password_hash, str(data.get("password", ""))):
+    if not verify_password(g.password_hash, str(data.get("password", ""))):
         raise ApiError("That password is incorrect.", 403)
     run("DELETE FROM users WHERE id = %s", g.user_id)  # Cascades to classes, sessions and attendance.
     return jsonify(ok=True)

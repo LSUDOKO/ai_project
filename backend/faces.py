@@ -8,6 +8,9 @@ import os
 import threading
 from pathlib import Path
 
+# Must be set before cv2 loads. A small JPEG can decode to hundreds of MB, which kills a 512 MB instance.
+os.environ.setdefault("OPENCV_IO_MAX_IMAGE_PIXELS", str(4096 * 4096))
+
 import cv2
 import numpy as np
 
@@ -37,17 +40,21 @@ def decode_image(data_url):
     if not isinstance(data_url, str) or not data_url:
         raise BadImage("Image is missing")
     payload = data_url.split(",", 1)[1] if data_url.startswith("data:") else data_url
-    try:
-        raw = base64.b64decode(payload, validate=True)
-    except (binascii.Error, ValueError) as exc:
-        raise BadImage("Image is not valid base64") from exc
-    img = cv2.imdecode(np.frombuffer(raw, np.uint8), cv2.IMREAD_COLOR)
-    if img is None:
-        raise BadImage("Image could not be read")
-    height, width = img.shape[:2]
-    scale = MAX_SIDE / max(height, width)
-    if scale < 1:
-        img = cv2.resize(img, (round(width * scale), round(height * scale)), interpolation=cv2.INTER_AREA)
+    # Under the lock so that only one full-size image is ever in memory, however many requests are waiting.
+    with _lock:
+        try:
+            raw = base64.b64decode(payload, validate=True)
+            img = cv2.imdecode(np.frombuffer(raw, np.uint8), cv2.IMREAD_COLOR)
+        except (binascii.Error, ValueError) as exc:
+            raise BadImage("Image is not valid base64") from exc
+        except cv2.error as exc:
+            raise BadImage("Image is too large") from exc
+        if img is None:
+            raise BadImage("Image could not be read")
+        height, width = img.shape[:2]
+        scale = MAX_SIDE / max(height, width)
+        if scale < 1:
+            img = cv2.resize(img, (round(width * scale), round(height * scale)), interpolation=cv2.INTER_AREA)
     return img
 
 

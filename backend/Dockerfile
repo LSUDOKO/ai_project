@@ -13,4 +13,8 @@ ADD --checksum=sha256:0ba9fbfa01b5270c96627c4ef784da859931e02f04419c829e83484087
 COPY app.py faces.py schema.sql ./
 
 ENV PORT=10000
-CMD exec gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120 --access-logfile -
+# Threads mostly wait on the inference and scrypt locks, so a spare one can still answer Render's /health check.
+# Few malloc arenas keep many threads from inflating memory on a 512 MB instance.
+# ponytail: 16 threads holds about 15 requests in flight. Above that /health queues; move to a bigger plan or a job queue.
+ENV MALLOC_ARENA_MAX=2
+CMD exec gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 16 --timeout 120 --access-logfile -

@@ -1,0 +1,16 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: rollcall-api
+    runtime: docker
+    region: singapore
+    plan: free
+    rootDir: backend # Dockerfile path and build context resolve from here.
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true

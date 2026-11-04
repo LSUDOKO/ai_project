@@ -220,3 +220,13 @@ def test_bad_images_and_delete_account(client):
     assert student.call("delete", "/api/me", json={"password": PW}).status_code == 200
     assert student.call("get", "/api/me").status_code == 401
     assert client.post("/api/signin", json={"email": "deleter@x.io", "password": PW}).status_code == 401
+
+
+def test_oversized_image_is_refused_before_decoding(client):
+    import cv2  # Imported here because faces.py sets the pixel limit before cv2 first loads.
+    import numpy as np
+
+    student = User(client, "bomb", "student")
+    _, jpeg = cv2.imencode(".jpg", np.full((4097, 4097, 3), 128, np.uint8))
+    url = "data:image/jpeg;base64," + base64.b64encode(jpeg.tobytes()).decode()
+    assert student.call("post", "/api/me/face/check", json={"image": url}).status_code == 400
